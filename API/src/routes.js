@@ -13,6 +13,7 @@ const {
   getDetailDangerPlaceHandler,
   editDangerPlaceByIdHandler,
   deleteDangerPlaceByIdHandler,
+  getAllUsersHandler,
 } = require('./handler');
 
 const routes = [
@@ -29,7 +30,7 @@ const routes = [
   {
     method: 'GET',
     path: '/user',
-    handler: addLoginUserHandler,
+    handler: getAllUsersHandler,
   },
   {
     method: 'GET',

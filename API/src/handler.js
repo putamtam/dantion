@@ -18,6 +18,15 @@ const addUsersHandler = (request, h) => {
     response.code(400);
     return response;
   }
+  const getUser = users.filter((user) => user.email === email)[0];
+  if (getUser !== undefined) {
+    const response = h.response({
+      status: 'fail',
+      message: 'Gagal menambahkan, Email sudah terdaftar',
+    });
+    response.code(400);
+    return response;
+  }
   const id = nanoid(16);
   const ttl = '';
   const role = 'umum';
