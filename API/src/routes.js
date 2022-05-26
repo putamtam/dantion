@@ -54,12 +54,12 @@ const routes = [
   },
   {
     method: 'PUT',
-    path: '/user/{detectionId}',
+    path: '/dangerDetection/{detectionId}',
     handler: editDangerDetectionByIdHandler,
   },
   {
     method: 'DELETE',
-    path: '/user/{detectionId}',
+    path: '/dangerDetection/{detectionId}',
     handler: deleteDangerDetectionByIdHandler,
   },
   // danger place
