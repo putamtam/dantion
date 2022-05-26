@@ -28,6 +28,11 @@ const routes = [
   },
   {
     method: 'GET',
+    path: '/user',
+    handler: addLoginUserHandler,
+  },
+  {
+    method: 'GET',
     path: '/user/{userId}',
     handler: getDetailUsersHandler,
   },

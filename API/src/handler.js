@@ -19,9 +19,9 @@ const addUsersHandler = (request, h) => {
     return response;
   }
   const id = nanoid(16);
-  const ttl = Date.getDate();
+  const ttl = '';
   const role = 'umum';
-  const photo = String;
+  const photo = '';
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
   const newUser = {
@@ -80,6 +80,14 @@ const addLoginUserHandler = (request, h) => {
     message: 'User tidak ditemukan',
   });
   response.code(404);
+  return response;
+};
+const getAllUsersHandler = (request, h) => {
+  const response = h.response({
+    status: 'success',
+    data: { users },
+  });
+  response.code(200);
   return response;
 };
 const getDetailUsersHandler = (request, h) => {
@@ -426,6 +434,7 @@ const deleteDangerPlaceByIdHandler = (request, h) => {
 module.exports = {
   addUsersHandler,
   addLoginUserHandler,
+  getAllUsersHandler,
   getDetailUsersHandler,
   editUsersByIdHandler,
   deleteUsersByIdHandler,
