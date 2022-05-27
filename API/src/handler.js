@@ -119,7 +119,8 @@ const getAllUsersHandler = (request, h) => {
   return response;
 };
 const getDetailUsersHandler = (request, h) => {
-  const { userId, myToken } = request.params;
+  // const { userId, myToken } = request.params;
+  const { userId, myToken } = request.query;
   request.setHeader('Authorization', `Bearer ${myToken}`);
   const user = users.filter((n) => n.id === userId)[0];
   if (user !== undefined) {
