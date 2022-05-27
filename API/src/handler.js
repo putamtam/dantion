@@ -94,7 +94,7 @@ const addLoginUserHandler = (request, h) => {
 const getAllUsersHandler = (request, h) => {
   const response = h.response({
     status: 'success',
-    data: { users },
+    users,
   });
   response.code(200);
   return response;
@@ -105,7 +105,7 @@ const getDetailUsersHandler = (request, h) => {
   if (user !== undefined) {
     const response = h.response({
       status: 'success',
-      data: { user },
+      user,
     });
     response.code(200);
     return response;
