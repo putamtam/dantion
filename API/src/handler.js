@@ -31,9 +31,11 @@ const addUsersHandler = (request, h) => {
   const birthDate = '';
   const role = 'umum';
   const photo = '';
+  const myToken = '';
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
   const newUser = {
+    id,
     name,
     address,
     number,
@@ -43,7 +45,7 @@ const addUsersHandler = (request, h) => {
     pass,
     role,
     photo,
-    id,
+    myToken,
     createdAt,
     updatedAt,
   };
@@ -69,6 +71,7 @@ const addLoginUserHandler = (request, h) => {
   const {
     email, pass,
   } = request.payload;
+  const myToken = nanoid(30);
   const getUser = users.filter((user) => user.email === email)[0];
   if (getUser !== undefined && getUser.pass === pass) {
     const response = h.response({
@@ -77,8 +80,16 @@ const addLoginUserHandler = (request, h) => {
         id: getUser.id,
         email: getUser.email,
         name: getUser.name,
+        token: myToken,
       },
     });
+    const index = users.findIndex((user) => user.id === getUser.id);
+    if (index !== -1) {
+      users[index] = {
+        ...users[index],
+        myToken,
+      };
+    }
     response.code(200);
     return response;
   }
@@ -108,7 +119,8 @@ const getAllUsersHandler = (request, h) => {
   return response;
 };
 const getDetailUsersHandler = (request, h) => {
-  const { userId } = request.params;
+  const { userId, myToken } = request.params;
+  request.setHeader('Authorization', `Bearer ${myToken}`);
   const user = users.filter((n) => n.id === userId)[0];
   if (user !== undefined) {
     const response = h.response({
