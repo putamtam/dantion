@@ -7,10 +7,10 @@ const {
 // User
 const addUsersHandler = (request, h) => {
   const {
-    name, alamat, number, parentNumber, email, pass,
+    name, address, number, parentNumber, email, pass,
   } = request.payload;
-  if (name === undefined && alamat === undefined && number === undefined
-    && parentNumber === undefined && email === undefined && pass === undefined) {
+  if (name === undefined || address === undefined || number === undefined
+    || parentNumber === undefined || email === undefined || pass === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan User. Mohon isi data dengan benar',
@@ -28,17 +28,17 @@ const addUsersHandler = (request, h) => {
     return response;
   }
   const id = nanoid(16);
-  const ttl = '';
+  const birthDate = '';
   const role = 'umum';
   const photo = '';
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
   const newUser = {
     name,
-    alamat,
+    address,
     number,
     parentNumber,
-    ttl,
+    birthDate,
     email,
     pass,
     role,
@@ -74,11 +74,9 @@ const addLoginUserHandler = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        users: users.map((user) => ({
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        })),
+        id: getUser.id,
+        email: getUser.email,
+        name: getUser.name,
       },
     });
     response.code(200);
@@ -94,7 +92,17 @@ const addLoginUserHandler = (request, h) => {
 const getAllUsersHandler = (request, h) => {
   const response = h.response({
     status: 'success',
-    users,
+    users: users.map((user) => ({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      address: user.address,
+      number: user.number,
+      parentNumber: user.parentNumber,
+      birthDate: user.birthDate,
+      role: user.role,
+      photo: user.photo,
+    })),
   });
   response.code(200);
   return response;
@@ -121,19 +129,19 @@ const editUsersByIdHandler = (request, h) => {
   const { userId } = request.params;
   const {
     name,
-    alamat,
+    address,
     number,
     parentNumber,
-    ttl,
+    birthDate,
     email,
     pass,
     role,
     photo,
   } = request.payload;
-  if (name === undefined && alamat === undefined && number === undefined
-    && parentNumber === undefined && email === undefined
-    && pass === undefined && ttl === undefined && role === undefined
-    && photo === undefined) {
+  if (name === undefined || address === undefined || number === undefined
+    || parentNumber === undefined || email === undefined
+    || pass === undefined || birthDate === undefined || role === undefined
+    || photo === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui data User. Mohon isi data dengan benar',
@@ -156,10 +164,10 @@ const editUsersByIdHandler = (request, h) => {
     users[index] = {
       ...users[index],
       name,
-      alamat,
+      address,
       number,
       parentNumber,
-      ttl,
+      birthDate,
       email,
       pass,
       role,
@@ -282,8 +290,8 @@ const editDangerDetectionByIdHandler = (request, h) => {
     status,
     isValid,
   } = request.payload;
-  if (latitude === undefined && longitude === undefined && rekaman === undefined
-    && tipe === undefined && status === undefined && isValid === undefined) {
+  if (latitude === undefined || longitude === undefined || rekaman === undefined
+    || tipe === undefined || status === undefined || isValid === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui data detection. Mohon isi data dengan benar',
@@ -342,8 +350,8 @@ const addDangerPlaceHandler = (request, h) => {
   const {
     latitude, longitude, radius, tipe,
   } = request.payload;
-  if (latitude === undefined && longitude === undefined
-    && radius === undefined && tipe === undefined) {
+  if (latitude === undefined || longitude === undefined
+    || radius === undefined || tipe === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan data place. Mohon isi data dengan benar',
@@ -412,8 +420,8 @@ const editDangerPlaceByIdHandler = (request, h) => {
   const {
     latitude, longitude, radius, tipe,
   } = request.payload;
-  if (latitude === undefined && longitude === undefined
-    && radius === undefined && tipe === undefined) {
+  if (latitude === undefined || longitude === undefined
+    || radius === undefined || tipe === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui data place. Mohon isi data dengan benar',
