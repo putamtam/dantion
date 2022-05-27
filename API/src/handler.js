@@ -18,6 +18,15 @@ const addUsersHandler = (request, h) => {
     response.code(400);
     return response;
   }
+  const getUser = users.filter((user) => user.email === email)[0];
+  if (getUser !== undefined) {
+    const response = h.response({
+      status: 'fail',
+      message: 'Gagal menambahkan, Email sudah terdaftar',
+    });
+    response.code(400);
+    return response;
+  }
   const id = nanoid(16);
   const ttl = '';
   const role = 'umum';
@@ -132,6 +141,15 @@ const editUsersByIdHandler = (request, h) => {
     response.code(400);
     return response;
   }
+  const getUser = users.filter((user) => user.email === email)[0];
+  if (getUser !== undefined) {
+    const response = h.response({
+      status: 'fail',
+      message: 'Gagal menambahkan, Email sudah terdaftar',
+    });
+    response.code(400);
+    return response;
+  }
   const updatedAt = new Date().toISOString();
   const index = users.findIndex((user) => user.id === userId);
   if (index !== -1) {
@@ -226,6 +244,14 @@ const addDangerDetectionHandler = (request, h) => {
     message: 'Danger detection gagal ditambahkan',
   });
   response.code(500);
+  return response;
+};
+const getAllDangerDetectionHandler = (request, h) => {
+  const response = h.response({
+    status: 'success',
+    data: { dangerDetection },
+  });
+  response.code(200);
   return response;
 };
 const getDetailDangerDetectionHandler = (request, h) => {
@@ -355,6 +381,14 @@ const addDangerPlaceHandler = (request, h) => {
   response.code(500);
   return response;
 };
+const getAllDangerPlaceHandler = (request, h) => {
+  const response = h.response({
+    status: 'success',
+    data: { dangerPlace },
+  });
+  response.code(200);
+  return response;
+};
 const getDetailDangerPlaceHandler = (request, h) => {
   const { placeId } = request.params;
   const place = dangerPlace.filter((n) => n.id === placeId)[0];
@@ -439,10 +473,12 @@ module.exports = {
   editUsersByIdHandler,
   deleteUsersByIdHandler,
   addDangerDetectionHandler,
+  getAllDangerDetectionHandler,
   getDetailDangerDetectionHandler,
   editDangerDetectionByIdHandler,
   deleteDangerDetectionByIdHandler,
   addDangerPlaceHandler,
+  getAllDangerPlaceHandler,
   getDetailDangerPlaceHandler,
   editDangerPlaceByIdHandler,
   deleteDangerPlaceByIdHandler,

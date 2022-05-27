@@ -6,10 +6,12 @@ const {
   editUsersByIdHandler,
   deleteUsersByIdHandler,
   addDangerDetectionHandler,
+  getAllDangerDetectionHandler,
   getDetailDangerDetectionHandler,
   editDangerDetectionByIdHandler,
   deleteDangerDetectionByIdHandler,
   addDangerPlaceHandler,
+  getAllDangerPlaceHandler,
   getDetailDangerPlaceHandler,
   editDangerPlaceByIdHandler,
   deleteDangerPlaceByIdHandler,
@@ -55,6 +57,11 @@ const routes = [
   },
   {
     method: 'GET',
+    path: '/dangerDetection',
+    handler: getAllDangerDetectionHandler,
+  },
+  {
+    method: 'GET',
     path: '/dangerDetection/{detectionId}',
     handler: getDetailDangerDetectionHandler,
   },
@@ -73,6 +80,11 @@ const routes = [
     method: 'POST',
     path: '/dangerPlace',
     handler: addDangerPlaceHandler,
+  },
+  {
+    method: 'GET',
+    path: '/dangerPlace',
+    handler: getAllDangerPlaceHandler,
   },
   {
     method: 'GET',
