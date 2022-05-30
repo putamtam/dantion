@@ -67,6 +67,8 @@ get user by id
     o	/users/{userId}
 •	Method
     o	GET
+•   Headers
+    o   Authorization: Bearer <token>
 •	Response Body
     {
         status: "Sukses",
@@ -86,6 +88,8 @@ update users
     o	/users/register
 •	Method
     o	PATCH
+•   Headers
+    o   Authorization: Bearer <token>
 •	Body Request
     {
         "id": string,
