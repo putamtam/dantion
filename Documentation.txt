@@ -1,0 +1,103 @@
+get all users
+•	URL
+    o	/users
+•	Method
+    o	GET
+•	Response Body
+    {
+        "status": "sukses",
+        "users": [
+            {
+                "id": "e33249af-4ea5-414a-b9ae-9d15c20547e7",
+                "name": "audiadyan",
+                "address": "pengadangan",
+                "number": "087777777777",
+                "parentNumber": "088888888888",
+                "email": "audi@gmail.com",
+                "password": "$2b$10$JtuWRV9Gd/7umDEaseyalekgKsfbJZQLJ42ikusU5.7CccFuUvhJ.",
+                "createdAt": "2022-05-30T09:28:06.859Z",
+                "updatedAt": "2022-05-30T09:28:06.859Z"
+            }
+        ]
+    }
+
+Register
+•	URL
+    o	/users/register
+•	Method
+    o	POST
+•	Body Request
+    {
+        "name": string,
+        "address": string,
+        "number": string,
+        "parentNumber": string,
+        "email": string,
+        "password": string
+    }
+•	Response Body
+    {
+        status: "Sukses",
+        message: "User berhasil ditambahkan"
+    }
+
+Login
+•   URL
+    o	/users/login
+•	Method
+    o	POST
+•	Body Request
+    {
+        "email": string,
+        "password": string
+    }
+•	Response Body
+    {
+        status: "Sukses",
+        loginResult: {
+            id: 675246bb-af86-4181-a142-718f51634612,
+            name: audiadyan,
+            email: audi@gmail.com,
+            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NTI0NmJiLWFmODYtNDE4MS1hMTQyLTcxOGY1MTYzNDYxMiIsImlhdCI6MTY1MzkwMzA1NywiZXhwIjoxNjUzOTg5NDU3fQ._07suVQR-b8l4yMz_buGPW1onpVYl4T-YRQulOd_sew
+        }
+    }
+
+get user by id
+•	URL
+    o	/users/{userId}
+•	Method
+    o	GET
+•	Response Body
+    {
+        status: "Sukses",
+        user: {
+            "id": "675246bb-af86-4181-a142-718f51634612",
+            "name": "audiadyan",
+            "address": "pengadangan",
+            "number": "087777777777",
+            "parentNumber": "088888888888",
+            "email": "audi@gmail.com"
+        }
+    }
+
+
+update users
+•	URL
+    o	/users/register
+•	Method
+    o	PATCH
+•	Body Request
+    {
+        "id": string,
+        "name": string,
+        "address": string,
+        "number": string,
+        "parentNumber": string,
+        "email": string,
+        "password": string
+    }
+•	Response Body
+    {
+        "status": "Sukses",
+        "message": "User berhasil diupdate"
+    }
