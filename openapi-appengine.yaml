@@ -28,13 +28,13 @@ schemes:
 securityDefinitions:
   # This section configures basic authentication with an API key.
   # api_key:
-  #   type: apiKey
-  #   name: key
-  #   in: query
+  #   type: 'apiKey'
+  #   name: 'key'
+  #   in: 'query'
   Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
+    type: 'apiKey'
+    name: 'Authorization'
+    in: 'header'
   # This section configures authentication using Google API Service Accounts
   # to sign a json web token. This is mostly used for server-to-server
   # communication.
