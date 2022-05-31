@@ -10,17 +10,17 @@ produces:
 - "application/json"
 schemes:
 - "https"
-# - "http"
+- "http"
 
-components:
-  # securitySchemes:
-  #   bearerAuth:
-  #     type: http
-  #     scheme: bearer
-  #     bearerFormat: JWT
-  responses:
-    UnauthorizedError:
-      description: Access token is missing or invalid
+# components:
+#   securitySchemes:
+#     bearerAuth:
+#       type: http
+#       scheme: bearer
+#       bearerFormat: JWT
+#   responses:
+#     UnauthorizedError:
+#       description: Access token is missing or invalid
 
 # This section requires all requests to any path to require an API key.
 security:
@@ -86,8 +86,8 @@ paths:
           description: "success get User"
           schema:
             $ref: "#/definitions/User"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
   "/users/role":
     patch:
       security:
@@ -101,8 +101,8 @@ paths:
           description: "success update User Role"
           schema:
             $ref: "#/definitions/User"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
   "/users/register":
     post:
       description: "Register User"
@@ -138,8 +138,8 @@ paths:
           description: "success get all detection"
           schema:
             $ref: "#/definitions/Detection"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
     post:
       security:
         - Bearer: []
@@ -152,8 +152,8 @@ paths:
           description: "success add detection"
           schema:
             $ref: "#/definitions/Detection"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
     patch:
       security:
         - Bearer: []
@@ -166,8 +166,8 @@ paths:
           description: "success update detection"
           schema:
             $ref: "#/definitions/Detection"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
   "/detections/{id}":
     get:
       security:
@@ -187,8 +187,8 @@ paths:
           description: "success get detection"
           schema:
             $ref: "#/definitions/Detection"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
     delete:
       security:
         - Bearer: []
@@ -207,8 +207,8 @@ paths:
           description: "success delete detection"
           schema:
             $ref: "#/definitions/Detection"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
   "/places":
     get:
       security:
@@ -222,8 +222,8 @@ paths:
           description: "success get all Place"
           schema:
             $ref: "#/definitions/Place"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
     post:
       security:
         - Bearer: []
@@ -236,8 +236,8 @@ paths:
           description: "success add Place"
           schema:
             $ref: "#/definitions/Place"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
     patch:
       security:
         - Bearer: []
@@ -250,8 +250,8 @@ paths:
           description: "success update Place"
           schema:
             $ref: "#/definitions/Place"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
   "/places/{id}":
     get:
       security:
@@ -271,8 +271,8 @@ paths:
           description: "success get Place"
           schema:
             $ref: "#/definitions/Place"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
     delete:
       security:
         - Bearer: []
@@ -291,8 +291,8 @@ paths:
           description: "success delete Place"
           schema:
             $ref: "#/definitions/Place"
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
+        # 401:
+        #   $ref: "#/components/responses/UnauthorizedError"
 definitions:
   User:
     type: "object"
