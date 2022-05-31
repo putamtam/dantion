@@ -222,8 +222,8 @@ definitions:
       role:
         type: "string"
         enum:
-        - "admin",
-        - "polisi",
+        - "admin"
+        - "polisi"
         - "ambulan"
       photo:
         type: "string"
