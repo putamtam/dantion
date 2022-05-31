@@ -17,12 +17,6 @@ schemes:
 #     type: apiKey
 #     name: Authorization
 #     in: header
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
 paths:
   "/users":
     get:
@@ -359,6 +353,11 @@ definitions:
         type: "string"
         format: "date-time"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
