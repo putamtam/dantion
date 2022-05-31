@@ -1,5 +1,5 @@
 swagger: "2.0"
-# openapi: "3.0.0"
+openapi: 3.0.0
 info:
   description: "Dantion Endpoints API."
   title: "Endpoints Dantion"
@@ -41,34 +41,34 @@ paths:
         description: "ID of user"
         required: true
         type: "string"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success get User"
           schema:
             $ref: "#/definitions/User"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
   "/users/role":
     patch:
       description: "Update User Role"
       operationId: "UserRole"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success update User Role"
           schema:
             $ref: "#/definitions/User"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
   "/users/register":
     post:
       description: "Register User"
@@ -97,49 +97,49 @@ paths:
       operationId: "alldetection"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success get all detection"
           schema:
             $ref: "#/definitions/Detection"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
     post:
       description: "Add Detection"
       operationId: "adddetection"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success add detection"
           schema:
             $ref: "#/definitions/Detection"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
     patch:
       description: "Update Detection"
       operationId: "updatedetection"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success update detection"
           schema:
             $ref: "#/definitions/Detection"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
   "/detections/{id}":
     get:
       description: "Get Detection Using ID"
@@ -152,24 +152,24 @@ paths:
         description: "ID of detection"
         required: true
         type: "string"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success get detection"
           schema:
             $ref: "#/definitions/Detection"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
     delete:
       description: "Delete Detection ID"
       operationId: "deleteDetection"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       parameters:
       - name: id
         in: path
@@ -181,59 +181,59 @@ paths:
           description: "success delete detection"
           schema:
             $ref: "#/definitions/Detection"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
   "/places":
     get:
       description: "Get All Place"
       operationId: "allPlace"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success get all Place"
           schema:
             $ref: "#/definitions/Place"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
     post:
       description: "Add Place"
       operationId: "addPlace"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success add Place"
           schema:
             $ref: "#/definitions/Place"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
     patch:
       description: "Update Place"
       operationId: "updatePlace"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success update Place"
           schema:
             $ref: "#/definitions/Place"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
   "/places/{id}":
     get:
       description: "Get Place Using ID"
@@ -246,24 +246,24 @@ paths:
         description: "ID of places"
         required: true
         type: "string"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "success get Place"
           schema:
             $ref: "#/definitions/Place"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
     delete:
       description: "Delete Place ID"
       operationId: "deletePlace"
       produces:
       - "application/json"
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       parameters:
       - name: id
         in: path
@@ -275,10 +275,10 @@ paths:
           description: "success delete Place"
           schema:
             $ref: "#/definitions/Place"
-        # 401:
-        #   description: "Unauthorized"
-        #   schema:
-        #     $ref: "#/components/responses/UnauthorizedError"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/components/responses/UnauthorizedError"
 definitions:
   User:
     type: "object"
@@ -383,15 +383,15 @@ definitions:
       updatedAt:
         type: "string"
         format: "date-time"
-# components:
-#   securitySchemes:
-#     bearerAuth:
-#       type: http
-#       scheme: bearer
-#       bearerFormat: JWT
-#   responses:
-#     UnauthorizedError:
-#       description: Access token is missing or invalid
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
 
 # This section requires all requests to any path to require an API key.
 security:
