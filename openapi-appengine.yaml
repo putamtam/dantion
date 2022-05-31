@@ -50,8 +50,7 @@ paths:
             $ref: "#/definitions/User"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
   "/users/role":
     patch:
       description: "Update User Role"
@@ -67,8 +66,7 @@ paths:
             $ref: "#/definitions/User"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
   "/users/register":
     post:
       description: "Register User"
@@ -106,8 +104,7 @@ paths:
             $ref: "#/definitions/Detection"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       description: "Add Detection"
       operationId: "adddetection"
@@ -122,8 +119,7 @@ paths:
             $ref: "#/definitions/Detection"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
     patch:
       description: "Update Detection"
       operationId: "updatedetection"
@@ -138,8 +134,7 @@ paths:
             $ref: "#/definitions/Detection"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
   "/detections/{id}":
     get:
       description: "Get Detection Using ID"
@@ -161,8 +156,7 @@ paths:
             $ref: "#/definitions/Detection"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       description: "Delete Detection ID"
       operationId: "deleteDetection"
@@ -183,8 +177,7 @@ paths:
             $ref: "#/definitions/Detection"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
   "/places":
     get:
       description: "Get All Place"
@@ -200,8 +193,7 @@ paths:
             $ref: "#/definitions/Place"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       description: "Add Place"
       operationId: "addPlace"
@@ -216,8 +208,7 @@ paths:
             $ref: "#/definitions/Place"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
     patch:
       description: "Update Place"
       operationId: "updatePlace"
@@ -232,8 +223,7 @@ paths:
             $ref: "#/definitions/Place"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
   "/places/{id}":
     get:
       description: "Get Place Using ID"
@@ -255,8 +245,7 @@ paths:
             $ref: "#/definitions/Place"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       description: "Delete Place ID"
       operationId: "deletePlace"
@@ -277,8 +266,7 @@ paths:
             $ref: "#/definitions/Place"
         401:
           description: "Unauthorized"
-          schema:
-            $ref: "#/components/responses/UnauthorizedError"
+          $ref: "#/components/responses/UnauthorizedError"
 definitions:
   User:
     type: "object"
