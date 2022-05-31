@@ -198,7 +198,7 @@ paths:
             $ref: "#/definitions/Place"
 components:
   securitySchemes:
-    bearerAuth:            # arbitrary name for the security scheme
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -222,9 +222,9 @@ definitions:
       role:
         type: "string"
         enum:
-        "admin",
-        "polisi",
-        "ambulan"
+        - "admin",
+        - "polisi",
+        - "ambulan"
       photo:
         type: "string"
       createdAt:
