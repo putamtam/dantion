@@ -90,7 +90,7 @@ export const detectionUpdate = (req, res) => {
     if(detectExist === undefined) {
         return res.json({
             status: "Gagal",
-            detection: "Data tidak ditemukan" 
+            message: "Data tidak ditemukan" 
         });
     }
 
@@ -145,7 +145,8 @@ export const detectionDelete = (req, res) => {
         }
     });
 
-    detections.filter((detect) => detect.id !== id)
+    const index = detections.findIndex((detect) => detect.id === id);
+    detections.splice(index, 1);
     return res.json({
         status: "Sukses",
         message: "Data berhasil dihapus"

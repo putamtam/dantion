@@ -7,7 +7,7 @@ import {
     detectionDetail,
     detectionUpdate,
     detectionDelete
-} from '../controllers/detection.js';
+} from '../controllers/detections.js';
 
 const router = express.Router();
 
