@@ -128,14 +128,12 @@ export const detectionUpdate = (req, res) => {
 
 export const detectionDelete = (req, res) => {
     const { id } = req.params;
-
     if(id === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
         });
     }
-
     const detectExist = detections.find((detect) => detect.id === id);
     if(detectExist === undefined) {
         return res.status(400).json({
