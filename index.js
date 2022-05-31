@@ -1,16 +1,25 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
 import express from 'express';
+import upload from 'express-fileupload';
+require('dotenv').config();
 
 import usersRoutes from './routes/users.js';
+import detectionRoutes from './routes/detections.js';
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.BASE_URL_PORT;
+const URL = `${process.env.BASE_URL}:${PORT}`;
 
 app.use(express.urlencoded({extended: false}));
+app.use(upload());
 
 app.use('/users', usersRoutes);
+app.use('/detections', detectionRoutes);
 
 app.get('/', (req, res) => {
     res.send("Ini halaman index");
-})
+});
 
-app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`Server running on port: ${URL}`));

@@ -1,3 +1,4 @@
+============================== User ==============================
 get all users
 •	URL
     o	/users
@@ -37,8 +38,8 @@ Register
     }
 •	Response Body
     {
-        status: "Sukses",
-        message: "User berhasil ditambahkan"
+        "status": "Sukses",
+        "message": "User berhasil ditambahkan"
     }
 
 Login
@@ -53,12 +54,12 @@ Login
     }
 •	Response Body
     {
-        status: "Sukses",
-        loginResult: {
-            id: 675246bb-af86-4181-a142-718f51634612,
-            name: audiadyan,
-            email: audi@gmail.com,
-            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NTI0NmJiLWFmODYtNDE4MS1hMTQyLTcxOGY1MTYzNDYxMiIsImlhdCI6MTY1MzkwMzA1NywiZXhwIjoxNjUzOTg5NDU3fQ._07suVQR-b8l4yMz_buGPW1onpVYl4T-YRQulOd_sew
+        "status": "Sukses",
+        "loginResul"t: {
+            "id": "675246bb-af86-4181-a142-718f51634612",
+            "name": "audiadyan",
+            "email": "audi@gmail.com",
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NTI0NmJiLWFmODYtNDE4MS1hMTQyLTcxOGY1MTYzNDYxMiIsImlhdCI6MTY1MzkwMzA1NywiZXhwIjoxNjUzOTg5NDU3fQ._07suVQR-b8l4yMz_buGPW1onpVYl4T-YRQulOd_sew"
         }
     }
 
@@ -104,4 +105,104 @@ update users
     {
         "status": "Sukses",
         "message": "User berhasil diupdate"
+    }
+
+
+============================== Danger Detection ==============================
+get all Danger Detection
+•	URL
+    o	/detections
+•	Method
+    o	GET
+•   Headers
+    o   Authorization: Bearer <token>
+•	Response Body
+    {
+        "status": "sukses",
+        "detections": [
+            {
+                "id": "D-ac608ef6-cbd3-44af-b838-90af77db59fe",
+                "lat": "12.09232",
+                "lon": "22.9182",
+                "recordUrl": "http://localhost:5000/uploads/R-09ab5c5f-7835-49e7-83a3-a5977dab463c.png",
+                "type": "pencurian",
+                "createdAt": "2022-05-31T05:08:08.901Z",
+                "updatedAt": "2022-05-31T05:08:08.901Z"
+            }
+        ]
+    }
+
+add Danger Detection
+•	URL
+    o	/detections
+•	Method
+    o	POST
+•   Headers
+    o   Authorization: Bearer <token>
+•	Body Request
+    {
+        "latitude": double,
+        "longitude": double,
+        "record": file,
+        "type": string
+    }
+•	Response Body
+    {
+        "status": "Sukses",
+        "message": "Data berhasil ditambahkan"
+    }
+
+detail Danger Detection
+•	URL
+    o	/detections/{userId}
+•	Method
+    o	GET
+•   Headers
+    o   Authorization: Bearer <token>
+•	Response Body
+    {
+        "status": "Sukses",
+        "detection": {
+            "id": "D-e2e8ae0b-5108-47f2-ad80-b5671c0ee0e6",
+            "lat": "12.09232",
+            "lon": "22.9182",
+            "recordUrl": "http://localhost:5000/uploads/R-dc50daa1-0dab-4050-b1fd-d29030cd1af7.png",
+            "type": "pencurian",
+            "createdAt": "2022-05-31T05:17:37.112Z",
+            "updatedAt": "2022-05-31T05:17:37.112Z"
+        }
+    }
+
+update Detail Detection
+•	URL
+    o	/detections
+•	Method
+    o	PATCH
+•   Headers
+    o   Authorization: Bearer <token>
+•	Body Request
+    {
+        "id": string,
+        "latitude": double,
+        "longitude": double,
+        "record": file,
+        "type": string
+    }
+•	Response Body
+    {
+        "status": "Sukses",
+        "message": "Data berhasil diupdate"
+    }
+
+delete Danger Detection
+•	URL
+    o	/detections/{userId}
+•	Method
+    o	DELETE
+•   Headers
+    o   Authorization: Bearer <token>
+•	Response Body
+    {
+        "status": "Sukses",
+        "message": "Data berhasil dihapus"
     }
