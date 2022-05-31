@@ -40,7 +40,7 @@ paths:
         in: path
         description: "ID of user"
         required: true
-        type: string
+        type: "string"
       # security:
       #   - bearerAuth: []
       responses:
@@ -151,7 +151,7 @@ paths:
         in: path
         description: "ID of detection"
         required: true
-        type: string
+        type: "string"
       # security:
       #   - bearerAuth: []
       responses:
@@ -170,6 +170,12 @@ paths:
       - "application/json"
       # security:
       #   - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: "ID of detection"
+        required: true
+        type: "string"
       responses:
         200:
           description: "success delete detection"
@@ -239,7 +245,7 @@ paths:
         in: path
         description: "ID of places"
         required: true
-        type: string
+        type: "string"
       # security:
       #   - bearerAuth: []
       responses:
@@ -258,6 +264,12 @@ paths:
       - "application/json"
       # security:
       #   - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: "ID of detection"
+        required: true
+        type: "string"
       responses:
         200:
           description: "success delete Place"
