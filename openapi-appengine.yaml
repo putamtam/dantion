@@ -10,7 +10,7 @@ produces:
 - "application/json"
 schemes:
 # Uncomment the next line if you configure SSL for this API.
-#- "https"
+- "https"
 - "http"
 paths:
   "/users":
@@ -23,7 +23,6 @@ paths:
         200:
           description: "get all user"
           schema:
-            schema:
             $ref: "#/definitions/User"
 definitions:
   User:
