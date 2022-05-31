@@ -11,11 +11,6 @@ produces:
 schemes:
 - "https"
 - "http"
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
 paths:
   "/users":
     get:
@@ -378,6 +373,10 @@ securityDefinitions:
     type: "apiKey"
     name: "key"
     in: "query"
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
   # This section configures authentication using Google API Service Accounts
   # to sign a json web token. This is mostly used for server-to-server
   # communication.
