@@ -12,11 +12,17 @@ produces:
 schemes:
 - "https"
 - "http"
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
+# securityDefinitions:
+#   Bearer:
+#     type: apiKey
+#     name: Authorization
+#     in: header
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 paths:
   "/users":
     get:
@@ -36,7 +42,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success get User"
@@ -53,7 +59,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success update User Role"
@@ -92,7 +98,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success get all detection"
@@ -108,7 +114,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success add detection"
@@ -124,7 +130,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success update detection"
@@ -141,7 +147,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success get detection"
@@ -157,7 +163,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success delete detection"
@@ -174,7 +180,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success get all Place"
@@ -190,7 +196,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success add Place"
@@ -206,7 +212,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success update Place"
@@ -223,7 +229,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success get Place"
@@ -239,7 +245,7 @@ paths:
       produces:
       - "application/json"
       security:
-        - Bearer: []
+        - bearerAuth: []
       responses:
         200:
           description: "success delete Place"
