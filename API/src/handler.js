@@ -1,16 +1,35 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable eqeqeq */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-shadow */
+/* eslint-disable no-tabs */
+/* eslint-disable max-len */
+/* eslint-disable consistent-return */
+/* eslint-disable no-unused-vars */
 /* eslint-disable linebreak-style */
+const fs = require('fs');
+const bcryptjs = require('bcryptjs');
 const { nanoid } = require('nanoid');
+const { Storage } = require('@google-cloud/storage');
 const {
   users, dangerDetection, dangerPlace,
 } = require('./dantion');
 
 // User
-const addUsersHandler = (request, h) => {
+const addUsersHandler = async (request, h) => {
   const {
     name, address, number, parentNumber, email, pass,
   } = request.payload;
-  if (name === undefined || address === undefined || number === undefined
-    || parentNumber === undefined || email === undefined || pass === undefined) {
+  const password = await bcryptjs.hashSync(pass, 10);
+  if (
+    name === undefined
+		|| address === undefined
+		|| number === undefined
+		|| parentNumber === undefined
+		|| email === undefined
+		|| pass === undefined
+  ) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan User. Mohon isi data dengan benar',
@@ -27,7 +46,7 @@ const addUsersHandler = (request, h) => {
     response.code(400);
     return response;
   }
-  const id = nanoid(16);
+  const id = `user-${nanoid(16)}`;
   const birthDate = '';
   const role = 'umum';
   const photo = '';
@@ -42,7 +61,7 @@ const addUsersHandler = (request, h) => {
     parentNumber,
     birthDate,
     email,
-    pass,
+    password,
     role,
     photo,
     // myToken,
@@ -72,26 +91,29 @@ const addLoginUserHandler = (request, h) => {
     email, pass,
   } = request.payload;
   // const myToken = nanoid(30);
-  const getUser = users.filter((user) => user.email === email)[0];
-  if (getUser !== undefined && getUser.pass === pass) {
-    const response = h.response({
-      status: 'success',
-      data: {
-        id: getUser.id,
-        email: getUser.email,
-        name: getUser.name,
-        // token: myToken,
-      },
-    });
-    // const index = users.findIndex((user) => user.id === getUser.id);
-    // if (index !== -1) {
-    //   users[index] = {
-    //     ...users[index],
-    //     myToken,
-    //   };
-    // }
-    response.code(200);
-    return response;
+  const getUser = users.find((user) => user.email === email);
+  // const getUser = await users.filter((user) => user.email === email)[0];
+  // const validPassword = await bcryptjs.compare(pass, getUser.pass);
+  // const validPassword = bcryptjs.compare(pass, getUser.pass, (err, result) => {
+  //   result == true;
+  // });
+
+  console.log(getUser);
+  if (getUser !== undefined) {
+    const validPassword = bcryptjs.compareSync(pass, getUser.password);
+    console.log(validPassword);
+    if (validPassword) {
+      const response = h.response({
+        status: 'success',
+        data: {
+          id: getUser.id,
+          email: getUser.email,
+          name: getUser.name,
+        },
+      });
+      response.code(200);
+      return response;
+    }
   }
   const response = h.response({
     status: 'fail',
@@ -162,15 +184,6 @@ const editUsersByIdHandler = (request, h) => {
     response.code(400);
     return response;
   }
-  const getUser = users.filter((user) => user.email === email)[0];
-  if (getUser !== undefined) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Gagal menambahkan, Email sudah terdaftar',
-    });
-    response.code(400);
-    return response;
-  }
   const updatedAt = new Date().toISOString();
   const index = users.findIndex((user) => user.id === userId);
   if (index !== -1) {
@@ -235,42 +248,72 @@ const addDangerDetectionHandler = (request, h) => {
     response.code(400);
     return response;
   }
-  const id = nanoid(16);
-  const createdAt = new Date().toISOString();
-  const updatedAt = createdAt;
-  const newDetection = {
-    latitude,
-    longitude,
-    rekaman,
-    tipe,
-    status,
-    isValid,
-    id,
-    createdAt,
-    updatedAt,
-  };
-  dangerDetection.push(newDetection);
-  const isSuccess = dangerDetection.filter((detection) => detection.id === id).length > 0;
-  if (isSuccess) {
+  if (rekaman) {
+    const actualName = rekaman.hapi.filename;
+    // const rekamanUrl = `${__dirname}/uploads/${name}`;
+
+    // The ID of your GCS bucket
+    const bucketName = 'dantion-api-tes';
+    // The new ID for your GCS file
+    const name = `${tipe}-rec-${nanoid(15)}.${actualName.split('.').pop()}`;
+    // The path to your file to upload
+    const filePath = `uploads/${name}`;
+    const rekamanUrl = `https://storage.cloud.google.com/dantion-api-tes/uploads/${name}`;
+
+    uploadFile(bucketName, filePath, name).catch(console.error);
+    // console.log(name + rekamanUrl);
+    // const file = fs.createWriteStream(rekamanUrl);
+
+    // file.on('error', (err) => {
+    //   const response = h.response({
+    //     status: 'fail',
+    //     message: err,
+    //   });
+    //   response.code(400);
+    //   return response;
+    // });
+
+    // rekaman.pipe(file);
+
+    // rekaman.on('end', (err) => {});
+    const id = `dd-${nanoid(16)}`;
+    const createdAt = new Date().toISOString();
+    const updatedAt = createdAt;
+    const newDetection = {
+      latitude,
+      longitude,
+      rekamanUrl,
+      tipe,
+      status,
+      isValid,
+      id,
+      userId,
+      createdAt,
+      updatedAt,
+    };
+    dangerDetection.push(newDetection);
+    const isSuccess =			dangerDetection.filter((detection) => detection.id === id).length > 0;
+    if (isSuccess) {
+      const response = h.response({
+        status: 'success',
+        message: 'Danger detection berhasil ditambahkan',
+        data: { detectionId: id },
+      });
+      response.code(201);
+      return response;
+    }
     const response = h.response({
-      status: 'success',
-      message: 'Danger detection berhasil ditambahkan',
-      data: { detectionId: id },
+      status: 'Error',
+      message: 'Danger detection gagal ditambahkan',
     });
-    response.code(201);
+    response.code(500);
     return response;
   }
-  const response = h.response({
-    status: 'Error',
-    message: 'Danger detection gagal ditambahkan',
-  });
-  response.code(500);
-  return response;
 };
 const getAllDangerDetectionHandler = (request, h) => {
   const response = h.response({
     status: 'success',
-    data: { dangerDetection },
+    dangerDetection,
   });
   response.code(200);
   return response;
@@ -281,7 +324,7 @@ const getDetailDangerDetectionHandler = (request, h) => {
   if (detection !== undefined) {
     const response = h.response({
       status: 'success',
-      data: { detection },
+      detection,
     });
     response.code(200);
     return response;
@@ -296,15 +339,9 @@ const getDetailDangerDetectionHandler = (request, h) => {
 const editDangerDetectionByIdHandler = (request, h) => {
   const { detectionId } = request.params;
   const {
-    latitude,
-    longitude,
-    rekaman,
-    tipe,
-    status,
     isValid,
   } = request.payload;
-  if (latitude === undefined || longitude === undefined || rekaman === undefined
-    || tipe === undefined || status === undefined || isValid === undefined) {
+  if (isValid === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui data detection. Mohon isi data dengan benar',
@@ -317,11 +354,6 @@ const editDangerDetectionByIdHandler = (request, h) => {
   if (index !== -1) {
     users[index] = {
       ...users[index],
-      latitude,
-      longitude,
-      rekaman,
-      tipe,
-      status,
       isValid,
       updatedAt,
     };
@@ -372,7 +404,7 @@ const addDangerPlaceHandler = (request, h) => {
     response.code(400);
     return response;
   }
-  const id = nanoid(16);
+  const id = `dp-${nanoid(16)}`;
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
   const newDetection = {
@@ -405,7 +437,7 @@ const addDangerPlaceHandler = (request, h) => {
 const getAllDangerPlaceHandler = (request, h) => {
   const response = h.response({
     status: 'success',
-    data: { dangerPlace },
+    dangerPlace,
   });
   response.code(200);
   return response;
@@ -416,7 +448,7 @@ const getDetailDangerPlaceHandler = (request, h) => {
   if (place !== undefined) {
     const response = h.response({
       status: 'success',
-      data: { place },
+      place,
     });
     response.code(200);
     return response;
@@ -486,6 +518,15 @@ const deleteDangerPlaceByIdHandler = (request, h) => {
   response.code(404);
   return response;
 };
+
+async function uploadFile(bucketName, filePath, destFileName) {
+  const storage = new Storage();
+  await storage.bucket(bucketName).upload(filePath, {
+    destination: destFileName,
+  });
+
+  console.log(`${filePath} uploaded to ${bucketName}`);
+}
 module.exports = {
   addUsersHandler,
   addLoginUserHandler,

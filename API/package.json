@@ -19,7 +19,9 @@
     "nodemon": "^2.0.16"
   },
   "dependencies": {
+    "@google-cloud/storage": "^6.0.1",
     "@hapi/hapi": "^20.2.2",
+    "bcryptjs": "^2.4.3",
     "nanoid": "^3.3.4"
   }
 }
