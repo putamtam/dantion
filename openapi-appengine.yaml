@@ -24,6 +24,184 @@ paths:
           description: "get all user"
           schema:
             $ref: "#/definitions/User"
+  "/users/{id}":
+    get:
+      description: "Get User Using ID"
+      operationId: "Userid"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success get User"
+          schema:
+            $ref: "#/definitions/User"
+  "/users/role":
+    patch:
+      description: "Update User Role"
+      operationId: "UserRole"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success update User Role"
+          schema:
+            $ref: "#/definitions/User"
+  "/users/register":
+    post:
+      description: "Register User"
+      operationId: "registeruser"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "success register user"
+          schema:
+            $ref: "#/definitions/User"
+  "/users/login":
+    post:
+      description: "Login User"
+      operationId: "loginuser"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "success login user"
+          schema:
+            $ref: "#/definitions/User"
+  "/detections":
+    get:
+      description: "Get All Detection"
+      operationId: "alldetection"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success get all detection"
+          schema:
+            $ref: "#/definitions/Detection"
+    post:
+      description: "Add Detection"
+      operationId: "adddetection"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success add detection"
+          schema:
+            $ref: "#/definitions/Detection"
+    patch:
+      description: "Update Detection"
+      operationId: "updatedetection"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success update detection"
+          schema:
+            $ref: "#/definitions/Detection"
+  "/detections/{id}":
+    get:
+      description: "Get Detection Using ID"
+      operationId: "detectionid"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success get detection"
+          schema:
+            $ref: "#/definitions/Detection"
+    delete:
+      description: "Delete Detection ID"
+      operationId: "deletedetection"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success delete detection"
+          schema:
+            $ref: "#/definitions/Detection"
+  "/places":
+    get:
+      description: "Get All Place"
+      operationId: "allPlace"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success get all Place"
+          schema:
+            $ref: "#/definitions/Place"
+    post:
+      description: "Add Place"
+      operationId: "addPlace"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success add Place"
+          schema:
+            $ref: "#/definitions/Place"
+    patch:
+      description: "Update Place"
+      operationId: "updatePlace"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success update Place"
+          schema:
+            $ref: "#/definitions/Place"
+  "/places/{id}":
+    get:
+      description: "Get Place Using ID"
+      operationId: "Placeid"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success get Place"
+          schema:
+            $ref: "#/definitions/Place"
+    delete:
+      description: "Delete Place ID"
+      operationId: "deletePlace"
+      produces:
+      - "application/json"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "success delete Place"
+          schema:
+            $ref: "#/definitions/Place"
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 definitions:
   User:
     type: "object"
@@ -41,6 +219,14 @@ definitions:
       password:
         type: "string"
         format: "password"
+      role:
+        type: "string"
+        enum:
+        "admin",
+        "polisi",
+        "ambulan"
+      photo:
+        type: "string"
       createdAt:
         type: "string"
         format: "date-time"
@@ -119,3 +305,33 @@ definitions:
       updatedAt:
         type: "string"
         format: "date-time"
+
+# This section requires all requests to any path to require an API key.
+security:
+- api_key: []
+securityDefinitions:
+  # This section configures basic authentication with an API key.
+  api_key:
+    type: "apiKey"
+    name: "key"
+    in: "query"
+  # This section configures authentication using Google API Service Accounts
+  # to sign a json web token. This is mostly used for server-to-server
+  # communication.
+  google_jwt:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    # This must match the 'iss' field in the JWT.
+    x-google-issuer: "jwt-client.endpoints.sample.google.com"
+    # Update this with your service account's email address.
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/jwk/YOUR-SERVICE-ACCOUNT-EMAIL"
+  # This section configures authentication using Google OAuth2 ID Tokens.
+  # ID Tokens can be obtained using OAuth2 clients, and can be used to access
+  # your API on behalf of a particular user.
+  google_id_token:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "accounts.google.com"
+    x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"

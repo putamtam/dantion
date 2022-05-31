@@ -31,21 +31,23 @@ export const userRegister = (req, res) => {
         });
     }
     const id = `U-${uuidv4()}`;
+    const photo = '';
     const hashPass = hashPassword(password);
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
     const newUser = {
-        id,
-        name,
-        address,
-        number,
-        parentNumber,
-        email,
-        password: hashPass,
-        role,
-        createdAt,
-        updatedAt
-    };
+			id,
+			name,
+			address,
+			number,
+			parentNumber,
+			email,
+			password: hashPass,
+			role,
+			photo,
+			createdAt,
+			updatedAt,
+		};
 
     users.push(newUser);
 
@@ -71,8 +73,8 @@ export const userLogin = (req, res) => {
             status: "Sukses",
             message: "User tidak terdaftar"
         });
-    } 
-    
+    }
+
     else if(!checkPassword(password, userExist.password)) {
         return res.status(201).json({
             status: "Gagal",
@@ -103,16 +105,20 @@ export const userDetail = (req, res) => {
 
     if(userExist !== undefined) {
         return res.json({
-            status: "Sukses",
-            user: {
-                id: userExist.id,
-                name: userExist.name,
-                address: userExist.address,
-                number: userExist.number,
-                parentNumber: userExist.parentNumber,
-                email: userExist.email
-            }
-        });
+					status: "Sukses",
+					user: {
+						id: userExist.id,
+						name: userExist.name,
+						address: userExist.address,
+						number: userExist.number,
+						parentNumber: userExist.parentNumber,
+						email: userExist.email,
+						password: userExist.password,
+						photo: userExist.photo,
+						createdAt: userExist.createdAt,
+						updatedAt: userExist.updatedAt,
+					},
+				});
     } else {
         return res.status(400).json({
             status: "Gagal",
@@ -120,6 +126,7 @@ export const userDetail = (req, res) => {
         });
     }
 }
+
 export const userUpdateRole = (req, res) => {
 	const { id, role} = req.body;
 	if ( id === undefined || role === undefined) {
@@ -135,26 +142,31 @@ export const userUpdateRole = (req, res) => {
 			message: "User tidak ditemukan",
 		});
 	}
+    if(userExist.role !== 'admin'){
+        return res.status(400).json({
+            status: "Gagal",
+            message: "Anda Tidak Berhak Mengubah Role",
+        });
+    }
 	userExist.role = role;
-
 	return res.json({
 		status: "Sukses",
-		message: "User berhasil diupdate",
+		message: "Role User berhasil diupdate",
 	});
 };
+
 
 export const userUpdate = (req, res) => {
     const {
         id, name, address, number, parentNumber, email, password
     } = req.body;
-
+    const file = req.files.photo;
     if (id === undefined || name === undefined || address === undefined || number === undefined || parentNumber === undefined || email === undefined || password === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Gagal mengupdate user. Mohon isi data dengan benar"
         });
     }
-
     const userExist = users.find((user) => user.id === id);
     if(userExist === undefined) {
         return res.status(400).json({
@@ -162,12 +174,27 @@ export const userUpdate = (req, res) => {
             message: "User tidak ditemukan"
         });
     } 
-    
+    let photoUrl='';
+    if (file !== undefined && file !== null) {
+        const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
+        const photoName = `uploads/${userExist.id}.${ext}`;
+        photoUrl = `${process.env.BASE_URL}:${process.env.BASE_URL_PORT}/${photoName}`;
+
+        file.mv(`./${photoName}`, (err) => {
+            if (err) {
+                return res.status(201).json({
+                    status: "Gagal",
+                    message: "File gagal diupload",
+                });
+            }
+        });
+    }
     userExist.name = name;
     userExist.address = address;
     userExist.number = number;
     userExist.parentNumber = parentNumber;
     userExist.email = email;
+    userExist.photo = photoUrl;
     userExist.password = hashPassword(password);
 
     return res.json({
