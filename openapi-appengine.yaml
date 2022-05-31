@@ -48,7 +48,6 @@ paths:
           description: "success get User"
           schema:
             $ref: "#/definitions/User"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -65,7 +64,6 @@ paths:
           description: "success update User Role"
           schema:
             $ref: "#/definitions/User"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -104,7 +102,6 @@ paths:
           description: "success get all detection"
           schema:
             $ref: "#/definitions/Detection"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -120,7 +117,6 @@ paths:
           description: "success add detection"
           schema:
             $ref: "#/definitions/Detection"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -136,7 +132,6 @@ paths:
           description: "success update detection"
           schema:
             $ref: "#/definitions/Detection"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -159,7 +154,6 @@ paths:
           description: "success get detection"
           schema:
             $ref: "#/definitions/Detection"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -181,7 +175,6 @@ paths:
           description: "success delete detection"
           schema:
             $ref: "#/definitions/Detection"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -198,7 +191,6 @@ paths:
           description: "success get all Place"
           schema:
             $ref: "#/definitions/Place"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -214,7 +206,6 @@ paths:
           description: "success add Place"
           schema:
             $ref: "#/definitions/Place"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -230,7 +221,6 @@ paths:
           description: "success update Place"
           schema:
             $ref: "#/definitions/Place"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -253,7 +243,6 @@ paths:
           description: "success get Place"
           schema:
             $ref: "#/definitions/Place"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
@@ -275,7 +264,6 @@ paths:
           description: "success delete Place"
           schema:
             $ref: "#/definitions/Place"
-      responses:
         401:
           description: "Unauthorized"
           $ref: "#/components/responses/UnauthorizedError"
