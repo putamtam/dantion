@@ -23,14 +23,14 @@ schemes:
 #       description: Access token is missing or invalid
 
 # This section requires all requests to any path to require an API key.
-security:
-- api_key: []
+# security:
+# - api_key: []
 securityDefinitions:
   # This section configures basic authentication with an API key.
-  api_key:
-    type: "apiKey"
-    name: "key"
-    in: "query"
+  # api_key:
+  #   type: apiKey
+  #   name: key
+  #   in: query
   Bearer:
     type: apiKey
     name: Authorization
