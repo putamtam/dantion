@@ -4,3 +4,30 @@ info:
   title: "Endpoints Dantion"
   version: "1.0.0"
 host: "dantion.appspot.com"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+schemes:
+# Uncomment the next line if you configure SSL for this API.
+#- "https"
+- "http"
+paths:
+  "/users":
+    get:
+      description: "Get All User"
+      operationId: "getuser"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "get all user"
+          schema:
+            $ref: "#/definitions/echoMessage"
+      parameters:
+      - description: "Message to echo"
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: "#/definitions/echoMessage"

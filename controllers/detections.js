@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
-import { detections } from '../models/dantion.js';
+import { detections, users } from '../models/dantion.js';
 
 export const detectionAll = (req, res) => {
     return res.json({
@@ -11,14 +11,21 @@ export const detectionAll = (req, res) => {
 
 export const detectionAdd = (req, res) => {
     const {
-        latitude, longitude, type, status
+        latitude, longitude, type, status, userId
     } = req.body;
     const file = req.files.record;
     const isValid = false;
-    if(latitude === undefined || longitude === undefined || file === undefined || file === null || type === undefined || status === undefined) {
+    if(userId === undefined || latitude === undefined || longitude === undefined || file === undefined || file === null || type === undefined || status === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
+        });
+    }
+    const userExist = users.find((user) => user.id === userId);
+    if (userExist === undefined) {
+        return res.status(400).json({
+            status: "Gagal",
+            message: "User tidak ditemukan",
         });
     }
 
@@ -47,6 +54,7 @@ export const detectionAdd = (req, res) => {
         type,
         isValid,
         status,
+        userId,
         createdAt,
         updatedAt
     };
@@ -78,7 +86,7 @@ export const detectionDetail = (req, res) => {
 export const detectionUpdate = (req, res) => {
     const {
         id, isValid
-    } = req.query;
+    } = req.body;
 
     if(id === undefined || isValid === undefined) {
         return res.status(400).json({
@@ -94,8 +102,20 @@ export const detectionUpdate = (req, res) => {
             message: "Data tidak ditemukan" 
         });
     }
+    const userId = detectExist.userId
+    const userRole = users.find((user) => user.id === userId);
 
     const updatedAt = new Date().toISOString();
+
+    if (userRole !== "polisi" ||
+	    userRole !== "ambulan" ||
+		userRole !== "admin"
+	) {
+        return res.json({
+            status: "Gagal",
+            message: "Anda tidak berhak memvalidasi data",
+        });
+    }
 
     detectExist.isValid = isValid;
     detectExist.updatedAt = updatedAt;

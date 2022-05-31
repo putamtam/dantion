@@ -14,7 +14,8 @@ export const userRegister = (req, res) => {
     const {
         name, address, number, parentNumber, email, password
     } = req.body;
-
+    const role = "umum"
+    
     if (name === undefined || address === undefined || number === undefined || parentNumber === undefined || email === undefined || password === undefined) {
         return res.status(400).json({
             status: "Gagal",
@@ -29,7 +30,6 @@ export const userRegister = (req, res) => {
             message: "Gagal menambahkan user. Email sudah terdaftar"
         });
     }
-
     const id = `U-${uuidv4()}`;
     const hashPass = hashPassword(password);
     const createdAt = new Date().toISOString();
@@ -42,6 +42,7 @@ export const userRegister = (req, res) => {
         parentNumber,
         email,
         password: hashPass,
+        role,
         createdAt,
         updatedAt
     };
@@ -119,6 +120,28 @@ export const userDetail = (req, res) => {
         });
     }
 }
+export const userUpdateRole = (req, res) => {
+	const { id, role} = req.body;
+	if ( id === undefined || role === undefined) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "Gagal mengupdate user. Mohon isi data dengan benar",
+		});
+	}
+	const userExist = users.find((user) => user.id === id);
+	if (userExist === undefined) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "User tidak ditemukan",
+		});
+	}
+	userExist.role = role;
+
+	return res.json({
+		status: "Sukses",
+		message: "User berhasil diupdate",
+	});
+};
 
 export const userUpdate = (req, res) => {
     const {
