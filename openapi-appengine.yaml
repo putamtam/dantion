@@ -23,11 +23,100 @@ paths:
         200:
           description: "get all user"
           schema:
-            $ref: "#/definitions/echoMessage"
-      parameters:
-      - description: "Message to echo"
-        in: body
-        name: message
-        required: true
-        schema:
-          $ref: "#/definitions/echoMessage"
+            schema:
+            $ref: "#/definitions/User"
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      number:
+        type: "string"
+      parentNumber:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      updatedAt:
+        type: "string"
+        format: "date-time"
+  Detection:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      recordUrl:
+        type: "string"
+        format: "binary"
+      type:
+        type: "string"
+        enum:
+        - "begal"
+        - "kecelakaan"
+      isValid:
+        type: "boolean"
+        default: false
+      status:
+        type: "string"
+        description: "Danger Detection Status"
+        enum:
+        - "pelapor"
+        - "korban"
+      userId:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      updatedAt:
+        type: "string"
+        format: "date-time"
+  Place:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      radius:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+        - "begal"
+        - "kecelakaan"
+      isValid:
+        type: "boolean"
+        default: false
+      status:
+        type: "string"
+        description: "Danger Detection Status"
+        enum:
+        - "pelapor"
+        - "korban"
+      userId:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      updatedAt:
+        type: "string"
+        format: "date-time"
