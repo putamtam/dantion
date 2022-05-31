@@ -1,9 +1,7 @@
-import jwt from 'jsonwebtoken';
 import { generateAccessToken } from '../routes/auth.js';
 import { hashPassword, checkPassword } from '../utils/helpers.js';
 import { v4 as uuidv4 } from 'uuid';
-
-let users = []
+import { users } from '../models/dantion.js';
 
 export const userAll = (req, res) => {
     return res.json({

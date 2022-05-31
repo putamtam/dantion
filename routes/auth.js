@@ -1,8 +1,3 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-
-require('dotenv').config();
-
 import jwt from 'jsonwebtoken';
 
 export function generateAccessToken(user) {
