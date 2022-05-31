@@ -30,7 +30,7 @@ export const userRegister = (req, res) => {
         });
     }
 
-    const id = uuidv4();
+    const id = `U-${uuidv4()}`;
     const hashPass = hashPassword(password);
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
