@@ -11,11 +11,11 @@ export const detectionAll = (req, res) => {
 
 export const detectionAdd = (req, res) => {
     const {
-        latitude, longitude, type
+        latitude, longitude, type, status
     } = req.body;
     const file = req.files.record;
-
-    if(latitude === undefined || longitude === undefined || file === undefined || file === null || type === undefined) {
+    const isValid = false;
+    if(latitude === undefined || longitude === undefined || file === undefined || file === null || type === undefined || status === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
@@ -45,6 +45,8 @@ export const detectionAdd = (req, res) => {
         lon: longitude,
         recordUrl,
         type,
+        isValid,
+        status,
         createdAt,
         updatedAt
     };
@@ -75,11 +77,10 @@ export const detectionDetail = (req, res) => {
 
 export const detectionUpdate = (req, res) => {
     const {
-        id, latitude, longitude, type
-    } = req.body;
-    const file = req.files.record;
+        id, isValid
+    } = req.query;
 
-    if(id === undefined || latitude === undefined || longitude === undefined || file === undefined || file === null || type === undefined) {
+    if(id === undefined || isValid === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
@@ -94,21 +95,9 @@ export const detectionUpdate = (req, res) => {
         });
     }
 
-    const recordName = detectExist.recordUrl.split('/').slice(3).join('/');
-    file.mv(`./${recordName}`, function (err) {
-        if(err) {
-            return res.status(201).json({
-                status: "Gagal",
-                message: "File gagal diupload"
-            });
-        }
-    })
-
     const updatedAt = new Date().toISOString();
 
-    detectExist.lat = latitude;
-    detectExist.lon = longitude;
-    detectExist.type = type;
+    detectExist.isValid = isValid;
     detectExist.updatedAt = updatedAt;
 
     return res.json({
@@ -119,7 +108,7 @@ export const detectionUpdate = (req, res) => {
 
 export const detectionDelete = (req, res) => {
     const { id } = req.params;
-    
+
     if(id === undefined) {
         return res.status(400).json({
             status: "Gagal",

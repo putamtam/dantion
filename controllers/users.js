@@ -139,7 +139,7 @@ export const userUpdate = (req, res) => {
             message: "User tidak ditemukan"
         });
     } 
-
+    
     userExist.name = name;
     userExist.address = address;
     userExist.number = number;

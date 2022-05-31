@@ -1,0 +1,6 @@
+swagger: "2.0"
+info:
+  description: "Dantion Endpoints API."
+  title: "Endpoints Dantion"
+  version: "1.0.0"
+host: "dantion.appspot.com"
