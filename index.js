@@ -13,7 +13,7 @@ const PORT = process.env.BASE_URL_PORT;
 const URL = `${process.env.BASE_URL}:${PORT}`;
 
 app.use(express.urlencoded({extended: false}));
-app.use(upload());
+app.use(upload({ createParentPath: true }));
 
 app.use('/users', usersRoutes);
 app.use('/detections', detectionRoutes);
