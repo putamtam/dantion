@@ -1,69 +1,75 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import { detections, users } from '../models/dantion.js';
+import { Storage } from "@google-cloud/storage";
 
 export const detectionAll = (req, res) => {
     return res.json({
         status: "Sukses",
+        message: "Berhasil mendapatkan data detection",
         detections: detections
     });
 }
 
 export const detectionAdd = (req, res) => {
-    const {
-        lat, lon, type, status, userId
-    } = req.body;
-    const file = req.files.recordUrl;
-    const isValid = false;
-    if(userId === undefined || lat === undefined || lon === undefined || file === undefined || file === null || type === undefined || status === undefined) {
-        return res.status(400).json({
-            status: "Gagal",
-            message: "Masukkan data dengan benar"
-        });
-    }
-    const userExist = users.find((user) => user.id === userId);
-    if (userExist === undefined) {
-        return res.status(400).json({
-            status: "Gagal",
-            message: "User tidak ditemukan",
-        });
-    }
+	const { lat, lon, type, status, userId } = req.body;
+	const file = req.files.recordUrl;
+	const isValid = false;
+    const storage = new Storage({ keyFilename: "gcp-storage.json" });
+	const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
+	if (
+		userId === undefined ||
+		lat === undefined ||
+		lon === undefined ||
+		file === undefined ||
+		file === null ||
+		type === undefined ||
+		status === undefined
+	) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "Masukkan data dengan benar",
+		});
+	}
+	const userExist = users.find((user) => user.id === userId);
+	if (userExist === undefined) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "User tidak ditemukan",
+		});
+	}
+    const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
+    const recordName = `R-${type}-${uuidv4()}.${ext}`;
+    const blob = bucket.file(recordName);
+    const blobStream = blob.createWriteStream();
 
-    const ext = file.name.split('.').filter(Boolean).slice(1).join('.');
-    const recordName = `uploads/R-${uuidv4()}.${ext}`;
-    const recordUrl = `${process.env.BASE_URL}:${process.env.BASE_URL_PORT}/${recordName}`;
-
-    file.mv(`./${recordName}`, (err) => {
-        if(err) {
-            return res.status(201).json({
-                status: "Gagal",
-                message: "File gagal diupload"
-            });
-        }
-    })
-
-    const id = "D-" + uuidv4();
-    const createdAt = new Date().toISOString();
-    const updatedAt = createdAt;
-
-    const newDetection = {
-        id,
-        lat,
-        lon,
-        recordUrl,
-        type,
-        isValid,
-        status,
-        userId,
-        createdAt,
-        updatedAt
-    };
-
-    detections.push(newDetection);
-    return res.json({
-        status: "Sukses",
-        message: "Data berhasil ditambahkan"
+    blobStream.on("error", (err) => {
+        res.status(500).send({ message: err.message });
     });
+
+    blobStream.on("finish", () => {
+        const id = "D-" + uuidv4();
+        const createdAt = new Date().toISOString();
+        const updatedAt = createdAt;
+        const recordUrl = `https://storage.googleapis.com/${bucket.name}/${recordName}`;
+        const newDetection = {
+            id,
+            lat,
+            lon,
+            recordUrl,
+            type,
+            isValid,
+            userId,
+            createdAt,
+            updatedAt,
+        };
+        detections.push(newDetection);
+        return res.json({
+            status: "Sukses",
+            message: "Data berhasil ditambahkan",
+        });
+    });
+    blobStream.end(file.data);
 }
 
 export const detectionDetail = (req, res) => {
@@ -73,6 +79,7 @@ export const detectionDetail = (req, res) => {
     if(detectExist !== undefined) {
         return res.json({
             status: "Sukses",
+            message: "Data berhasil ditemukan",
             detection: detectExist 
         });
     } else {
@@ -106,9 +113,7 @@ export const detectionUpdate = (req, res) => {
 
     const updatedAt = new Date().toISOString();
 
-    if (userRole !== "polisi" ||
-	    userRole !== "ambulan"
-	) {
+    if (userRole !== "polisi" || userRole !== "ambulan" || userRole !== "damkar") {
         return res.json({
             status: "Gagal",
             message: "Anda tidak berhak memvalidasi data",
@@ -145,7 +150,7 @@ export const detectionDelete = (req, res) => {
         if(err) {
             res.status(201).json({
                 status: "Gagal",
-                message: "Tidak bisa menghapus file"
+                message: "Tidak dapat menghapus file"
             });
         }
     });

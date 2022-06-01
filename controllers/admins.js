@@ -25,8 +25,8 @@ export const adminLogin = (req, res) => {
             status: "Gagal",
             message: "Login gagal"
         });
-    } 
-    
+    }
+
     else {
         const admin = { id: adminExist.id };
         const accessToken = generateAccessToken(admin);
@@ -48,7 +48,7 @@ export const adminUpdateUserRole = (req, res) => {
 	if (userId === undefined || role === undefined) {
 		return res.status(400).json({
 			status: "Gagal",
-			message: "Gagal mengupdate user. Mohon isi data dengan benar",
+			message: "Gagal memperbarui role user. Mohon isi data dengan benar",
 		});
 	}
 	const userExist = users.find((user) => user.id === userId);
@@ -61,6 +61,6 @@ export const adminUpdateUserRole = (req, res) => {
 	userExist.role = role;
 	return res.json({
 		status: "Sukses",
-		message: "Role User berhasil diupdate",
+		message: "Role User berhasil diperbarui",
 	});
 };

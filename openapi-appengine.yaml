@@ -6,21 +6,21 @@ info:
   version: "1.0.0"
 host: "dantion.et.r.appspot.com"
 tags:
-- name: "Admin"
-  description: "Access to Admin orders"
-- name: "Users"
-  description: "Access to Users orders"
-- name: "Detections"
-  description: "Access to Detections orders"
-- name: "Place"
-  description: "Access to Place orders"
+  - name: "Admin"
+    description: "Access to Admin orders"
+  - name: "Users"
+    description: "Access to Users orders"
+  - name: "Detections"
+    description: "Access to Detections orders"
+  - name: "Place"
+    description: "Access to Place orders"
 consumes:
-- "application/json"
+  - "application/json"
 produces:
-- "application/json"
+  - "application/json"
 schemes:
-- "https"
-- "http"
+  - "https"
+  - "http"
 
 # components:
 #   securitySchemes:
@@ -34,18 +34,18 @@ schemes:
 
 # This section requires all requests to any path to require an API key.
 security:
-# - api_key: ['AIzaSyAMiyLWcIlzAZnQWciTMLQjIARqla9zzxc']
-- api_key: []
+  # - api_key: ['AIzaSyAMiyLWcIlzAZnQWciTMLQjIARqla9zzxc']
+  - api_key: []
 securityDefinitions:
   # This section configures basic authentication with an API key.
   api_key:
-    type: 'apiKey'
-    name: 'key'
-    in: 'query'
+    type: "apiKey"
+    name: "key"
+    in: "query"
   Bearer:
-    type: 'apiKey'
-    name: 'Authorization'
-    in: 'header'
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
   # This section configures authentication using Google API Service Accounts
   # to sign a json web token. This is mostly used for server-to-server
   # communication.
@@ -76,13 +76,13 @@ paths:
       description: "Update User Role"
       operationId: "UserRole"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: body
-        name: Admin Update User Role
-        description: Request body for update user role.
-        schema:
-          $ref: '#/definitions/AdminUpdateUserRoleBody'
+        - in: body
+          name: Admin Update User Role
+          description: Request body for update user role.
+          schema:
+            $ref: "#/definitions/AdminUpdateUserRoleBody"
       responses:
         201:
           description: "Success update user role"
@@ -95,13 +95,13 @@ paths:
       description: "Login Admin"
       operationId: "loginadmin"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
         - in: body
           name: Admin Login
           description: Request body for login admin.
           schema:
-            $ref: '#/definitions/AdminLoginBody'
+            $ref: "#/definitions/AdminLoginBody"
       responses:
         201:
           description: "success login admin"
@@ -118,7 +118,13 @@ paths:
       description: "Get All User"
       operationId: "getuser"
       produces:
-      - "application/json"
+        - "application/json"
+      parameters:
+        - in: body
+          name: all User
+          description: Request body for all user.
+          schema:
+            $ref: "#/definitions/UserAllBody"
       responses:
         201:
           description: "success get all user"
@@ -134,13 +140,13 @@ paths:
       description: "Update User"
       operationId: "updateuser"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: body
-        name: Update User
-        description: Request body for update user.
-        schema:
-          $ref: '#/definitions/UserUpdateBody'
+        - in: body
+          name: Update User
+          description: Request body for update user.
+          schema:
+            $ref: "#/definitions/UserUpdateBody"
       responses:
         201:
           description: "success update user"
@@ -159,13 +165,13 @@ paths:
       description: "Get User Using ID"
       operationId: "Userid"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: id
-        in: path
-        description: "ID of user"
-        required: true
-        type: "string"
+        - name: id
+          in: path
+          description: "ID of user"
+          required: true
+          type: "string"
       responses:
         201:
           description: "success get detail User"
@@ -182,13 +188,13 @@ paths:
       description: "Register User"
       operationId: "registeruser"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: body
-        name: Register User
-        description: Request body for register user.
-        schema:
-          $ref: '#/definitions/UserRegisterBody'
+        - in: body
+          name: Register User
+          description: Request body for register user.
+          schema:
+            $ref: "#/definitions/UserRegisterBody"
       responses:
         201:
           description: "success register user"
@@ -205,13 +211,13 @@ paths:
       description: "Login User"
       operationId: "loginuser"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: body
-        name: Login User
-        description: Request body for login user.
-        schema:
-          $ref: '#/definitions/UserLoginBody'
+        - in: body
+          name: Login User
+          description: Request body for login user.
+          schema:
+            $ref: "#/definitions/UserLoginBody"
       responses:
         201:
           description: "success login user"
@@ -230,28 +236,40 @@ paths:
       description: "Get All Detection"
       operationId: "alldetection"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         201:
           description: "success get all detection"
           schema:
-            $ref: "#/definitions/Detection"
+            $ref: "#/definitions/DetectionSuccessResponse"
+        400:
+          description: "failed get all detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
     post:
       tags:
-        - "Detections"  
+        - "Detections"
       security:
         - Bearer: []
       description: "Add Detection"
       operationId: "adddetection"
       produces:
-      - "application/json"
+        - "application/json"
+      parameters:
+        - in: body
+          name: Add detection
+          description: Request body for add detection.
+          schema:
+            $ref: "#/definitions/AddDetectionBody"
       responses:
         201:
           description: "success add detection"
           schema:
-            $ref: "#/definitions/Detection"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed login user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
     patch:
       tags:
         - "Detections"
@@ -260,14 +278,22 @@ paths:
       description: "Update Detection"
       operationId: "updatedetection"
       produces:
-      - "application/json"
+        - "application/json"
+      parameters:
+        - in: body
+          name: Update detection
+          description: Request body for Update detection.
+          schema:
+            $ref: "#/definitions/DetectionUpdateBody"
       responses:
         201:
           description: "success update detection"
           schema:
-            $ref: "#/definitions/Detection"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed update detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/detections/{id}":
     get:
       tags:
@@ -277,20 +303,22 @@ paths:
       description: "Get Detection Using ID"
       operationId: "detectionId"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: id
-        in: path
-        description: "ID of detection"
-        required: true
-        type: "string"
+        - name: id
+          in: path
+          description: "ID of detection"
+          required: true
+          type: "string"
       responses:
         201:
-          description: "success get detection"
+          description: "success get detail detection"
           schema:
-            $ref: "#/definitions/Detection"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/DetectionSuccessResponse"
+        400:
+          description: "failed get detail detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
     delete:
       tags:
         - "Detections"
@@ -299,20 +327,22 @@ paths:
       description: "Delete Detection ID"
       operationId: "deleteDetection"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: id
-        in: path
-        description: "ID of detection"
-        required: true
-        type: "string"
+        - name: id
+          in: path
+          description: "ID of detection"
+          required: true
+          type: "string"
       responses:
         201:
           description: "success delete detection"
           schema:
-            $ref: "#/definitions/Detection"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed delete detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/places":
     get:
       tags:
@@ -322,14 +352,16 @@ paths:
       description: "Get All Place"
       operationId: "allPlace"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         201:
-          description: "success get all Place"
+          description: "success get all place"
           schema:
-            $ref: "#/definitions/Place"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/PlaceSuccessResponse"
+        400:
+          description: "failed get all place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
     post:
       tags:
         - "Place"
@@ -338,14 +370,22 @@ paths:
       description: "Add Place"
       operationId: "addPlace"
       produces:
-      - "application/json"
+        - "application/json"
+      parameters:
+        - in: body
+          name: Add place
+          description: Request body for add place.
+          schema:
+            $ref: "#/definitions/AddPlaceBody"
       responses:
         201:
-          description: "success add Place"
+          description: "success add place"
           schema:
-            $ref: "#/definitions/Place"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed add place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
     patch:
       tags:
         - "Place"
@@ -354,14 +394,22 @@ paths:
       description: "Update Place"
       operationId: "updatePlace"
       produces:
-      - "application/json"
+        - "application/json"
+      parameters:
+        - in: body
+          name: Update place
+          description: Request body for update place.
+          schema:
+            $ref: "#/definitions/UpdatePlaceBody"
       responses:
         201:
-          description: "success update Place"
+          description: "success update place"
           schema:
-            $ref: "#/definitions/Place"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed update place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/places/{id}":
     get:
       tags:
@@ -371,20 +419,22 @@ paths:
       description: "Get Place Using ID"
       operationId: "Placeid"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: id
-        in: path
-        description: "ID of places"
-        required: true
-        type: "string"
+        - name: id
+          in: path
+          description: "ID of places"
+          required: true
+          type: "string"
       responses:
         201:
-          description: "success get Place"
+          description: "success get detail place"
           schema:
-            $ref: "#/definitions/Place"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/PlaceSuccessResponse"
+        400:
+          description: "failed get detail place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
     delete:
       tags:
         - "Place"
@@ -393,20 +443,22 @@ paths:
       description: "Delete Place ID"
       operationId: "deletePlace"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: id
-        in: path
-        description: "ID of detection"
-        required: true
-        type: "string"
+        - name: id
+          in: path
+          description: "ID of places"
+          required: true
+          type: "string"
       responses:
         201:
-          description: "success delete Place"
+          description: "success get delete place"
           schema:
-            $ref: "#/definitions/Place"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed get delete place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
 definitions:
   StatusMessageResponse:
     type: "object"
@@ -460,8 +512,9 @@ definitions:
       role:
         type: "string"
         enum:
-        - "polisi"
-        - "ambulan"
+          - "polisi"
+          - "ambulan"
+          - "damkar"
   User:
     type: "object"
     properties:
@@ -475,15 +528,18 @@ definitions:
         type: "string"
       parentNumber:
         type: "string"
+      email:
+        type: "string"
       password:
         type: "string"
         format: "password"
       role:
         type: "string"
         enum:
-        - "admin"
-        - "polisi"
-        - "ambulan"
+          - "admin"
+          - "polisi"
+          - "ambulan"
+          - "damkar"
       photo:
         type: "string"
       createdAt:
@@ -493,7 +549,7 @@ definitions:
         type: "string"
         format: "date-time"
   UserLoginResponse:
-    $ref: '#/definitions/AdminLoginResponse'
+    $ref: "#/definitions/AdminLoginResponse"
   UserSuccessResponse:
     type: "object"
     properties:
@@ -502,7 +558,7 @@ definitions:
       message:
         type: "string"
       user:
-        $ref: '#/definitions/User'
+        $ref: "#/definitions/User"
   UserLoginBody:
     type: "object"
     properties:
@@ -522,17 +578,23 @@ definitions:
         type: "string"
       parentNumber:
         type: "string"
+      email:
+        type: "string"
       password:
         type: "string"
         format: "password"
+  UserAllBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
   UserUpdateBody:
-    $ref: '#/definitions/UserRegisterBody'
+    $ref: "#/definitions/UserRegisterBody"
   Detection:
     type: "object"
     properties:
       id:
         type: "string"
-        format: "binary"
       lat:
         type: "number"
         format: "double"
@@ -545,17 +607,12 @@ definitions:
       type:
         type: "string"
         enum:
-        - "begal"
-        - "kecelakaan"
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
       isValid:
         type: "boolean"
         default: false
-      status:
-        type: "string"
-        description: "Danger Detection Status"
-        enum:
-        - "pelapor"
-        - "korban"
       userId:
         type: "string"
       createdAt:
@@ -564,6 +621,48 @@ definitions:
       updatedAt:
         type: "string"
         format: "date-time"
+  DetectionSuccessResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      user:
+        $ref: "#/definitions/Detection"
+  AddDetectionBody:
+    type: "object"
+    properties:
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
+      status:
+        type: "string"
+        description: "Danger Detection Status"
+        enum:
+          - "pelapor"
+          - "korban"
+      userId:
+        type: "string"
+  DetectionUpdateBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      isValid:
+        type: "boolean"
+        default: false
+      idUserLogin:
+        type: "string"
   Place:
     type: "object"
     properties:
@@ -581,8 +680,9 @@ definitions:
       type:
         type: "string"
         enum:
-        - "begal"
-        - "kecelakaan"
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
       isValid:
         type: "boolean"
         default: false
@@ -590,8 +690,8 @@ definitions:
         type: "string"
         description: "Danger Detection Status"
         enum:
-        - "pelapor"
-        - "korban"
+          - "pelapor"
+          - "korban"
       userId:
         type: "string"
       createdAt:
@@ -600,3 +700,50 @@ definitions:
       updatedAt:
         type: "string"
         format: "date-time"
+  PlaceSuccessResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      user:
+        $ref: "#/definitions/Place"
+  AddPlaceBody:
+    type: "object"
+    properties:
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      radius:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
+  UpdatePlaceBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      radius:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"

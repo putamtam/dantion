@@ -4,6 +4,7 @@ import { places } from '../models/dantion.js';
 export const placeAll = (req, res) => {
     return res.json({
         status: "Sukses",
+        message: "Berhasil mendapatkan data place",
         places: places
     });
 }
@@ -48,6 +49,7 @@ export const placeDetail = (req, res) => {
     if(placeExist !== undefined) {
         return res.json({
             status: "Sukses",
+            message: "Data berhasil ditemukan",
             place: placeExist 
         });
     } else {
@@ -106,10 +108,9 @@ export const placeDelete = (req, res) => {
     if(placeExist < 0) {
         return res.status(400).json({
             status: "Gagal",
-            message: " Data tidak ditemukan"
+            message: "Data tidak ditemukan"
         });
     }
-
     places.splice(placeExist, 1);
     return res.json({
         status: "Sukses",

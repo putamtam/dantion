@@ -2,9 +2,10 @@ import { generateAccessToken } from '../routes/auth.js';
 import { hashPassword, checkPassword } from '../utils/helpers.js';
 import { v4 as uuidv4 } from 'uuid';
 import { users, admins } from '../models/dantion.js';
+import { Storage } from "@google-cloud/storage";
 
 export const userAll = (req, res) => {
-    const {id} = req.params
+    const {id} = req.body
     const adminsExist = admins.find((admin) => admin.id === id);
     if (adminsExist === undefined){
         return res.status(400).json({
@@ -89,8 +90,8 @@ export const userLogin = (req, res) => {
             status: "Gagal",
             message: "Login gagal"
         });
-    } 
-    
+    }
+
     else {
         const user = { id: userExist.id };
         const accessToken = generateAccessToken(user);
@@ -137,7 +138,6 @@ export const userDetail = (req, res) => {
         });
     }
 }
-
 export const userUpdate = (req, res) => {
     const {
         id, name, address, number, parentNumber, email, password
@@ -146,7 +146,7 @@ export const userUpdate = (req, res) => {
     if (id === undefined || name === undefined || address === undefined || number === undefined || parentNumber === undefined || email === undefined || password === undefined) {
         return res.status(400).json({
             status: "Gagal",
-            message: "Gagal mengupdate user. Mohon isi data dengan benar"
+            message: "Gagal memperbarui user. Mohon isi data dengan benar"
         });
     }
     const userExist = users.find((user) => user.id === id);
@@ -158,18 +158,24 @@ export const userUpdate = (req, res) => {
     } 
     let photoUrl='';
     if (file !== undefined && file !== null) {
+        const storage = new Storage({ keyFilename: "gcp-storage.json" });
+        const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
         const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
-        const photoName = `uploads/${userExist.id}.${ext}`;
-        photoUrl = `${process.env.BASE_URL}:${process.env.BASE_URL_PORT}/${photoName}`;
+        const photoName = `PP-${userExist.id}.${ext}`;
+        photoUrl = `https://storage.googleapis.com/${bucket.name}/${photoName}`;
 
-        file.mv(`./${photoName}`, (err) => {
-            if (err) {
-                return res.status(400).json({
-                    status: "Gagal",
-                    message: "File gagal diupload",
-                });
-            }
+        const blob = bucket.file(photoName);
+        const blobStream = blob.createWriteStream();
+
+        blobStream.on("error", (err) => {
+            return res.status(400).json({
+                status: "Gagal",
+                message: err,
+            });
         });
+
+        blobStream.on("finish", () => {});
+        blobStream.end(file.data);
     }
     userExist.name = name;
     userExist.address = address;
