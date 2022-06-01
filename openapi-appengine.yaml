@@ -25,7 +25,8 @@ schemes:
 
 # This section requires all requests to any path to require an API key.
 security:
-- api_key: ['AIzaSyAMiyLWcIlzAZnQWciTMLQjIARqla9zzxc']
+# - api_key: ['AIzaSyAMiyLWcIlzAZnQWciTMLQjIARqla9zzxc']
+- api_key: []
 securityDefinitions:
   # This section configures basic authentication with an API key.
   api_key:
@@ -65,11 +66,17 @@ paths:
       operationId: "UserRole"
       produces:
       - "application/json"
+      parameters:
+      - in: body
+        name: Admin Update User Role
+        description: Request body for update user role.
+        schema:
+          $ref: '#/definitions/AdminUpdateUserRoleBody'
       responses:
         200:
           description: "success update User Role"
           schema:
-            $ref: "#/definitions/Admin"
+            $ref: "#/definitions/AdminUpdateUserRoleResponse"
   "/admins/register":
     post:
       description: "Register Admin"
@@ -80,19 +87,24 @@ paths:
         200:
           description: "success register admin"
           schema:
-            $ref: "#/definitions/Admin"
+            $ref: "#/definitions/AdminResponse"
   "/admins/login":
     post:
       description: "Login Admin"
       operationId: "loginadmin"
       produces:
       - "application/json"
-      
+      parameters:
+        - in: body
+          name: Admin Login
+          description: Request body for login admin.
+          schema:
+            $ref: '#/definitions/AdminLoginBody'
       responses:
         200:
           description: "success login admin"
           schema:
-            $ref: "#/definitions/Admin"
+            $ref: "#/definitions/AdminResponse"
   "/users":
     get:
       description: "Get All User"
@@ -317,7 +329,7 @@ paths:
         #   $ref: "#/components/responses/UnauthorizedError"
 
 definitions:
-  Admin:
+  AdminResponse:
     type: "object"
     properties:
       id:
@@ -329,6 +341,42 @@ definitions:
       password:
         type: "string"
         format: "password"
+  AdminLoginBody:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+  AdminUpdateBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+  AdminUpdateUserRoleResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+  AdminUpdateUserRoleBody:
+    type: "object"
+    properties:
+      userId:
+        type: "string"
+      role:
+        type: "string"
+        enum:
+        - "polisi"
+        - "ambulan"
   User:
     type: "object"
     properties:
