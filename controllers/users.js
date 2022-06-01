@@ -14,6 +14,7 @@ export const userAll = (req, res) => {
     }
     return res.json({
         status: "Sukses",
+        message: "Berhasil Mendapatkan Semua User",
         users
     });
 }
@@ -96,6 +97,7 @@ export const userLogin = (req, res) => {
 
         return res.json({
             status: "Sukses",
+            message: "Berhasil Login",
             loginResult: {
                 id: userExist.id,
                 name: userExist.name,
@@ -114,6 +116,7 @@ export const userDetail = (req, res) => {
     if(userExist !== undefined) {
         return res.json({
 					status: "Sukses",
+                    message: "Berhasil mendapatakan detail user",
 					user: {
 						id: userExist.id,
 						name: userExist.name,
@@ -161,7 +164,7 @@ export const userUpdate = (req, res) => {
 
         file.mv(`./${photoName}`, (err) => {
             if (err) {
-                return res.status(201).json({
+                return res.status(400).json({
                     status: "Gagal",
                     message: "File gagal diupload",
                 });

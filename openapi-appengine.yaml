@@ -4,7 +4,16 @@ info:
   description: "Dantion Endpoints API."
   title: "Endpoints Dantion"
   version: "1.0.0"
-host: "dantion.appspot.com"
+host: "dantion.et.r.appspot.com"
+tags:
+- name: "Admin"
+  description: "Access to Admin orders"
+- name: "Users"
+  description: "Access to Users orders"
+- name: "Detections"
+  description: "Access to Detections orders"
+- name: "Place"
+  description: "Access to Place orders"
 consumes:
 - "application/json"
 produces:
@@ -60,6 +69,8 @@ securityDefinitions:
 paths:
   "/admins/userRole":
     patch:
+      tags:
+        - "Admin"
       security:
         - Bearer: []
       description: "Update User Role"
@@ -73,23 +84,14 @@ paths:
         schema:
           $ref: '#/definitions/AdminUpdateUserRoleBody'
       responses:
-        200:
-          description: "success update User Role"
+        201:
+          description: "Success update user role"
           schema:
-            $ref: "#/definitions/AdminUpdateUserRoleResponse"
-  "/admins/register":
-    post:
-      description: "Register Admin"
-      operationId: "registeradmin"
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: "success register admin"
-          schema:
-            $ref: "#/definitions/AdminResponse"
+            $ref: "#/definitions/StatusMessageResponse"
   "/admins/login":
     post:
+      tags:
+        - "Admin"
       description: "Login Admin"
       operationId: "loginadmin"
       produces:
@@ -101,23 +103,57 @@ paths:
           schema:
             $ref: '#/definitions/AdminLoginBody'
       responses:
-        200:
+        201:
           description: "success login admin"
           schema:
-            $ref: "#/definitions/AdminResponse"
+            $ref: "#/definitions/AdminLoginResponse"
+        400:
+          description: "failed login admin"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/users":
     get:
+      tags:
+        - "Users"
       description: "Get All User"
       operationId: "getuser"
       produces:
       - "application/json"
       responses:
-        200:
-          description: "get all user"
+        201:
+          description: "success get all user"
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/UserSuccessResponse"
+        400:
+          description: "failed get all user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    patch:
+      tags:
+        - "Users"
+      description: "Update User"
+      operationId: "updateuser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: body
+        name: Update User
+        description: Request body for update user.
+        schema:
+          $ref: '#/definitions/UserUpdateBody'
+      responses:
+        201:
+          description: "success update user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed get all user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/users/{id}":
     get:
+      tags:
+        - "Users"
       security:
         - Bearer: []
       description: "Get User Using ID"
@@ -131,36 +167,64 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
-          description: "success get User"
+        201:
+          description: "success get detail User"
           schema:
-            $ref: "#/definitions/User"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
+            $ref: "#/definitions/UserSuccessResponse"
+        400:
+          description: "failed get detail User"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/users/register":
     post:
+      tags:
+        - "Users"
       description: "Register User"
       operationId: "registeruser"
       produces:
       - "application/json"
+      parameters:
+      - in: body
+        name: Register User
+        description: Request body for register user.
+        schema:
+          $ref: '#/definitions/UserRegisterBody'
       responses:
-        200:
+        201:
           description: "success register user"
           schema:
             $ref: "#/definitions/User"
+        400:
+          description: "failed register user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/users/login":
     post:
+      tags:
+        - "Users"
       description: "Login User"
       operationId: "loginuser"
       produces:
       - "application/json"
+      parameters:
+      - in: body
+        name: Login User
+        description: Request body for login user.
+        schema:
+          $ref: '#/definitions/UserLoginBody'
       responses:
-        200:
+        201:
           description: "success login user"
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/UserLoginResponse"
+        400:
+          description: "failed login user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
   "/detections":
     get:
+      tags:
+        - "Detections"
       security:
         - Bearer: []
       description: "Get All Detection"
@@ -168,13 +232,13 @@ paths:
       produces:
       - "application/json"
       responses:
-        200:
+        201:
           description: "success get all detection"
           schema:
             $ref: "#/definitions/Detection"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
     post:
+      tags:
+        - "Detections"  
       security:
         - Bearer: []
       description: "Add Detection"
@@ -182,13 +246,15 @@ paths:
       produces:
       - "application/json"
       responses:
-        200:
+        201:
           description: "success add detection"
           schema:
             $ref: "#/definitions/Detection"
         # 401:
         #   $ref: "#/components/responses/UnauthorizedError"
     patch:
+      tags:
+        - "Detections"
       security:
         - Bearer: []
       description: "Update Detection"
@@ -196,7 +262,7 @@ paths:
       produces:
       - "application/json"
       responses:
-        200:
+        201:
           description: "success update detection"
           schema:
             $ref: "#/definitions/Detection"
@@ -204,6 +270,8 @@ paths:
         #   $ref: "#/components/responses/UnauthorizedError"
   "/detections/{id}":
     get:
+      tags:
+        - "Detections"
       security:
         - Bearer: []
       description: "Get Detection Using ID"
@@ -217,13 +285,15 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        201:
           description: "success get detection"
           schema:
             $ref: "#/definitions/Detection"
         # 401:
         #   $ref: "#/components/responses/UnauthorizedError"
     delete:
+      tags:
+        - "Detections"
       security:
         - Bearer: []
       description: "Delete Detection ID"
@@ -237,7 +307,7 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        201:
           description: "success delete detection"
           schema:
             $ref: "#/definitions/Detection"
@@ -245,6 +315,8 @@ paths:
         #   $ref: "#/components/responses/UnauthorizedError"
   "/places":
     get:
+      tags:
+        - "Place"
       security:
         - Bearer: []
       description: "Get All Place"
@@ -252,13 +324,15 @@ paths:
       produces:
       - "application/json"
       responses:
-        200:
+        201:
           description: "success get all Place"
           schema:
             $ref: "#/definitions/Place"
         # 401:
         #   $ref: "#/components/responses/UnauthorizedError"
     post:
+      tags:
+        - "Place"
       security:
         - Bearer: []
       description: "Add Place"
@@ -266,13 +340,15 @@ paths:
       produces:
       - "application/json"
       responses:
-        200:
+        201:
           description: "success add Place"
           schema:
             $ref: "#/definitions/Place"
         # 401:
         #   $ref: "#/components/responses/UnauthorizedError"
     patch:
+      tags:
+        - "Place"
       security:
         - Bearer: []
       description: "Update Place"
@@ -280,7 +356,7 @@ paths:
       produces:
       - "application/json"
       responses:
-        200:
+        201:
           description: "success update Place"
           schema:
             $ref: "#/definitions/Place"
@@ -288,6 +364,8 @@ paths:
         #   $ref: "#/components/responses/UnauthorizedError"
   "/places/{id}":
     get:
+      tags:
+        - "Place"
       security:
         - Bearer: []
       description: "Get Place Using ID"
@@ -301,13 +379,15 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        201:
           description: "success get Place"
           schema:
             $ref: "#/definitions/Place"
         # 401:
         #   $ref: "#/components/responses/UnauthorizedError"
     delete:
+      tags:
+        - "Place"
       security:
         - Bearer: []
       description: "Delete Place ID"
@@ -321,26 +401,38 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        201:
           description: "success delete Place"
           schema:
             $ref: "#/definitions/Place"
         # 401:
         #   $ref: "#/components/responses/UnauthorizedError"
-
 definitions:
-  AdminResponse:
+  StatusMessageResponse:
     type: "object"
     properties:
-      id:
+      status:
         type: "string"
-      name:
+      message:
         type: "string"
-      email:
+  AdminLoginResponse:
+    type: "object"
+    properties:
+      status:
         type: "string"
-      password:
+      message:
         type: "string"
-        format: "password"
+      loginResult:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+          name:
+            type: "string"
+          email:
+            type: "string"
+          token:
+            type: "string"
   AdminLoginBody:
     type: "object"
     properties:
@@ -359,13 +451,6 @@ definitions:
       email:
         type: "string"
       password:
-        type: "string"
-  AdminUpdateUserRoleResponse:
-    type: "object"
-    properties:
-      status:
-        type: "string"
-      message:
         type: "string"
   AdminUpdateUserRoleBody:
     type: "object"
@@ -407,6 +492,41 @@ definitions:
       updatedAt:
         type: "string"
         format: "date-time"
+  UserLoginResponse:
+    $ref: '#/definitions/AdminLoginResponse'
+  UserSuccessResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      user:
+        $ref: '#/definitions/User'
+  UserLoginBody:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+  UserRegisterBody:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      number:
+        type: "string"
+      parentNumber:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+  UserUpdateBody:
+    $ref: '#/definitions/UserRegisterBody'
   Detection:
     type: "object"
     properties:

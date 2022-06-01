@@ -8,6 +8,6 @@ export const admins = [
 		name: "Admin Dantion",
 		email: "admindantion@gmail.com",
 		password: "$2b$10$XnKFh7jUuQCSP5iJwjxArudeOxZK/ybnxKUsE4qkvbASCFaDZfPxC",
-	},
+	}
 ];
 export const places = [];
