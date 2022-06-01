@@ -10,10 +10,10 @@ export const placeAll = (req, res) => {
 
 export const placeAdd = (req, res) => {
     const {
-        latitude, longitude, radius, type
+        lat, lon, radius, type
     } = req.body;
 
-    if(latitude === undefined || longitude === undefined || radius === undefined || type === undefined) {
+    if(lat === undefined || lon === undefined || radius === undefined || type === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
@@ -26,8 +26,8 @@ export const placeAdd = (req, res) => {
 
     const newPlace = {
         id,
-        lat: latitude,
-        lon: longitude,
+        lat,
+        lon,
         radius,
         type,
         createdAt,
@@ -60,10 +60,10 @@ export const placeDetail = (req, res) => {
 
 export const placeUpdate = (req, res) => {
     const {
-        id, latitude, longitude, radius, type
+        id, lat, lon, radius, type
     } = req.body;
 
-    if(id === undefined || latitude === undefined || longitude === undefined || radius === undefined || type === undefined) {
+    if(id === undefined || lat === undefined || lon === undefined || radius === undefined || type === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
@@ -80,8 +80,8 @@ export const placeUpdate = (req, res) => {
 
     const updatedAt = new Date().toISOString();
 
-    placeExist.lat = latitude;
-    placeExist.lon = longitude;
+    placeExist.lat = lat;
+    placeExist.lon = lon;
     placeExist.radius = radius;
     placeExist.type = type;
     placeExist.updatedAt = updatedAt;

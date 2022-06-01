@@ -1,4 +1,5 @@
 swagger: "2.0"
+# openapi: 3.0.3
 info:
   description: "Dantion Endpoints API."
   title: "Endpoints Dantion"
@@ -23,14 +24,14 @@ schemes:
 #       description: Access token is missing or invalid
 
 # This section requires all requests to any path to require an API key.
-# security:
-# - api_key: []
+security:
+- api_key: ['AIzaSyAMiyLWcIlzAZnQWciTMLQjIARqla9zzxc']
 securityDefinitions:
   # This section configures basic authentication with an API key.
-  # api_key:
-  #   type: 'apiKey'
-  #   name: 'key'
-  #   in: 'query'
+  api_key:
+    type: 'apiKey'
+    name: 'key'
+    in: 'query'
   Bearer:
     type: 'apiKey'
     name: 'Authorization'
@@ -56,6 +57,42 @@ securityDefinitions:
   #   x-google-issuer: "accounts.google.com"
   #   x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
 paths:
+  "/admins/userRole":
+    patch:
+      security:
+        - Bearer: []
+      description: "Update User Role"
+      operationId: "UserRole"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "success update User Role"
+          schema:
+            $ref: "#/definitions/Admin"
+  "/admins/register":
+    post:
+      description: "Register Admin"
+      operationId: "registeradmin"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "success register admin"
+          schema:
+            $ref: "#/definitions/Admin"
+  "/admins/login":
+    post:
+      description: "Login Admin"
+      operationId: "loginadmin"
+      produces:
+      - "application/json"
+      
+      responses:
+        200:
+          description: "success login admin"
+          schema:
+            $ref: "#/definitions/Admin"
   "/users":
     get:
       description: "Get All User"
@@ -84,21 +121,6 @@ paths:
       responses:
         200:
           description: "success get User"
-          schema:
-            $ref: "#/definitions/User"
-        # 401:
-        #   $ref: "#/components/responses/UnauthorizedError"
-  "/users/role":
-    patch:
-      security:
-        - Bearer: []
-      description: "Update User Role"
-      operationId: "UserRole"
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: "success update User Role"
           schema:
             $ref: "#/definitions/User"
         # 401:
@@ -293,7 +315,20 @@ paths:
             $ref: "#/definitions/Place"
         # 401:
         #   $ref: "#/components/responses/UnauthorizedError"
+
 definitions:
+  Admin:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
   User:
     type: "object"
     properties:

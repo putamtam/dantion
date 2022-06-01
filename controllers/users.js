@@ -1,12 +1,20 @@
 import { generateAccessToken } from '../routes/auth.js';
 import { hashPassword, checkPassword } from '../utils/helpers.js';
 import { v4 as uuidv4 } from 'uuid';
-import { users } from '../models/dantion.js';
+import { users, admins } from '../models/dantion.js';
 
 export const userAll = (req, res) => {
+    const {id} = req.params
+    const adminsExist = admins.find((admin) => admin.id === id);
+    if (adminsExist === undefined){
+        return res.status(400).json({
+            status: "Gagal",
+            message: "Gagal melihat user, Anda tidak berhak",
+        });
+    }
     return res.json({
         status: "Sukses",
-        users: users
+        users
     });
 }
 
@@ -36,18 +44,18 @@ export const userRegister = (req, res) => {
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
     const newUser = {
-			id,
-			name,
-			address,
-			number,
-			parentNumber,
-			email,
-			password: hashPass,
-			role,
-			photo,
-			createdAt,
-			updatedAt,
-		};
+        id,
+        name,
+        address,
+        number,
+        parentNumber,
+        email,
+        password: hashPass,
+        role,
+        photo,
+        createdAt,
+        updatedAt,
+    };
 
     users.push(newUser);
 
@@ -126,35 +134,6 @@ export const userDetail = (req, res) => {
         });
     }
 }
-
-export const userUpdateRole = (req, res) => {
-	const { id, role} = req.body;
-	if ( id === undefined || role === undefined) {
-		return res.status(400).json({
-			status: "Gagal",
-			message: "Gagal mengupdate user. Mohon isi data dengan benar",
-		});
-	}
-	const userExist = users.find((user) => user.id === id);
-	if (userExist === undefined) {
-		return res.status(400).json({
-			status: "Gagal",
-			message: "User tidak ditemukan",
-		});
-	}
-    if(userExist.role !== 'admin'){
-        return res.status(400).json({
-            status: "Gagal",
-            message: "Anda Tidak Berhak Mengubah Role",
-        });
-    }
-	userExist.role = role;
-	return res.json({
-		status: "Sukses",
-		message: "Role User berhasil diupdate",
-	});
-};
-
 
 export const userUpdate = (req, res) => {
     const {

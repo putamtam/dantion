@@ -11,11 +11,11 @@ export const detectionAll = (req, res) => {
 
 export const detectionAdd = (req, res) => {
     const {
-        latitude, longitude, type, status, userId
+        lat, lon, type, status, userId
     } = req.body;
-    const file = req.files.record;
+    const file = req.files.recordUrl;
     const isValid = false;
-    if(userId === undefined || latitude === undefined || longitude === undefined || file === undefined || file === null || type === undefined || status === undefined) {
+    if(userId === undefined || lat === undefined || lon === undefined || file === undefined || file === null || type === undefined || status === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
@@ -48,8 +48,8 @@ export const detectionAdd = (req, res) => {
 
     const newDetection = {
         id,
-        lat: latitude,
-        lon: longitude,
+        lat,
+        lon,
         recordUrl,
         type,
         isValid,
@@ -85,7 +85,7 @@ export const detectionDetail = (req, res) => {
 
 export const detectionUpdate = (req, res) => {
     const {
-        id, isValid
+        id, isValid, idUserLogin
     } = req.body;
 
     if(id === undefined || isValid === undefined) {
@@ -102,14 +102,12 @@ export const detectionUpdate = (req, res) => {
             message: "Data tidak ditemukan" 
         });
     }
-    const userId = detectExist.userId
-    const userRole = users.find((user) => user.id === userId);
+    const userRole = users.find((user) => user.id === idUserLogin);
 
     const updatedAt = new Date().toISOString();
 
     if (userRole !== "polisi" ||
-	    userRole !== "ambulan" ||
-		userRole !== "admin"
+	    userRole !== "ambulan"
 	) {
         return res.json({
             status: "Gagal",

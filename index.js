@@ -8,6 +8,7 @@ require('dotenv').config();
 import usersRoutes from './routes/users.js';
 import detectionRoutes from './routes/detections.js';
 import placeRoutes from './routes/places.js';
+import adminsRoutes from "./routes/admins.js";
 
 const app = express();
 const PORT = process.env.BASE_URL_PORT;
@@ -19,6 +20,7 @@ app.use(upload({ createParentPath: true }));
 app.use('/users', usersRoutes);
 app.use('/detections', detectionRoutes);
 app.use('/places', placeRoutes);
+app.use("/admins", adminsRoutes);
 
 app.get('/', (req, res) => {
     res.send("Ini halaman index");
