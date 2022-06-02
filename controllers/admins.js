@@ -1,6 +1,5 @@
 import { generateAccessToken } from '../routes/auth.js';
 import { checkPassword } from '../utils/helpers.js';
-import { admins, users } from '../models/dantion.js';
 
 export const adminLogin = (req, res) => {
     const { email, password } = req.body

@@ -1,18 +1,33 @@
 import { generateAccessToken } from '../routes/auth.js';
 import { hashPassword, checkPassword } from '../utils/helpers.js';
 import { v4 as uuidv4 } from 'uuid';
-import { users, admins } from '../models/dantion.js';
 import { Storage } from "@google-cloud/storage";
+import { bigqueryClient } from '../index.js';
 
-export const userAll = (req, res) => {
+export const userAll = async (req, res) => {
     const {id} = req.body
-    const adminsExist = admins.find((admin) => admin.id === id);
-    if (adminsExist === undefined){
+    
+    const queryAdminExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.admins\` WHERE id=@id`;
+    let options = {
+        query: queryAdminExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [adminsExist] = await bigqueryClient.query(options);
+    if (adminsExist.emailCount === 0){
         return res.status(400).json({
             status: "Gagal",
             message: "Gagal melihat user, Anda tidak berhak",
         });
     }
+
+    const queryUserAll = `SELECT * FROM \`dantion.dantion_big_query.users\``;
+    options = {
+        query: queryUserAll,
+        location: 'asia-southeast2'
+    };
+    const [users] = await bigqueryClient.query(options);
+
     return res.json({
         status: "Sukses",
         message: "Berhasil Mendapatkan Semua User",
@@ -20,7 +35,7 @@ export const userAll = (req, res) => {
     });
 }
 
-export const userRegister = (req, res) => {
+export const userRegister = async (req, res) => {
     const {
         name, address, number, parentNumber, email, password
     } = req.body;
@@ -33,33 +48,50 @@ export const userRegister = (req, res) => {
         });
     }
 
-    const userExist = users.find((user) => user.email === email);
-    if(userExist !== undefined) {
+    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.users\` WHERE email=@email`;
+    let options = {
+        query: queryUserExist,
+        location: 'asia-southeast2',
+        params: { email: email }
+    };
+    const [userExist] = await bigqueryClient.query(options);
+
+    if(userExist[0].emailCount !== 0) {
         return res.status(400).json({
             status: "Gagal",
             message: "Gagal menambahkan user. Email sudah terdaftar"
         });
     }
+
     const id = `U-${uuidv4()}`;
     const photo = '';
     const hashPass = hashPassword(password);
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
-    const newUser = {
-        id,
-        name,
-        address,
-        number,
-        parentNumber,
-        email,
-        password: hashPass,
-        role,
-        photo,
-        createdAt,
-        updatedAt,
+
+    const queryNewUser = `INSERT \`dantion.dantion_big_query.users\`
+    (id, name, address, number, parentNumber, email, password, role, photo, createdAt, updatedAt) 
+    VALUES (@id, @name, @address, @number, @parentNumber, @email, @password, @role, @photo, @createdAt, @updatedAt)`;
+
+    options = {
+        query: queryNewUser,
+        location: 'asia-southeast2',
+        params: {
+            id: id, 
+            name: name,
+            address: address, 
+            number: number,
+            parentNumber: parentNumber, 
+            email: email,
+            password: hashPass, 
+            role: role,
+            photo: photo, 
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        }
     };
 
-    users.push(newUser);
+    await bigqueryClient.query(options);
 
     return res.json({
         status: "Sukses",
@@ -67,7 +99,7 @@ export const userRegister = (req, res) => {
     });
 }
 
-export const userLogin = (req, res) => {
+export const userLogin = async (req, res) => {
     const { email, password } = req.body
 
     if(email === undefined || password === undefined) {
@@ -77,15 +109,23 @@ export const userLogin = (req, res) => {
         });
     }
 
-    const userExist = users.find((user) => user.email === email);
-    if(userExist === undefined) {
+    const queryUserExist = `SELECT id, name, email, password FROM \`dantion.dantion_big_query.users\` WHERE email=@email`;
+    let options = {
+        query: queryUserExist,
+        location: 'asia-southeast2',
+        params: { email: email }
+    };
+    const [rUserExist] = await bigqueryClient.query(options);
+
+    if(rUserExist.length === 0) {
         return res.status(201).json({
             status: "Sukses",
             message: "User tidak terdaftar"
         });
     }
 
-    else if(!checkPassword(password, userExist.password)) {
+    const userExist = rUserExist[0];
+    if(!checkPassword(password, userExist.password)) {
         return res.status(201).json({
             status: "Gagal",
             message: "Login gagal"
@@ -109,12 +149,20 @@ export const userLogin = (req, res) => {
     }
 }
 
-export const userDetail = (req, res) => {
+export const userDetail = async (req, res) => {
     const { id } = req.params
 
-    const userExist = users.find((user) => user.id === id);
+    const queryUserExist = `SELECT * FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    let options = {
+        query: queryUserExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [rUserExist] = await bigqueryClient.query(options);
 
-    if(userExist !== undefined) {
+    if(rUserExist.length !== 0) {
+        const userExist = rUserExist[0];
+        console.log(userExist);
         return res.json({
 					status: "Sukses",
                     message: "Berhasil mendapatakan detail user",
@@ -138,7 +186,7 @@ export const userDetail = (req, res) => {
         });
     }
 }
-export const userUpdate = (req, res) => {
+export const userUpdate = async (req, res) => {
     const {
         id, name, address, number, parentNumber, email, password
     } = req.body;
@@ -149,13 +197,23 @@ export const userUpdate = (req, res) => {
             message: "Gagal memperbarui user. Mohon isi data dengan benar"
         });
     }
-    const userExist = users.find((user) => user.id === id);
-    if(userExist === undefined) {
+    
+    const queryUserExist = `SELECT * FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    let options = {
+        query: queryUserExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [rUserExist] = await bigqueryClient.query(options);
+    if(rUserExist.length === 0) {
         return res.status(400).json({
             status: "Gagal",
             message: "User tidak ditemukan"
         });
     } 
+
+    const userExist = rUserExist[0];
+
     let photoUrl='';
     if (file !== undefined && file !== null) {
         const storage = new Storage({ keyFilename: "gcp-storage.json" });
@@ -177,13 +235,26 @@ export const userUpdate = (req, res) => {
         blobStream.on("finish", () => {});
         blobStream.end(file.data);
     }
-    userExist.name = name;
-    userExist.address = address;
-    userExist.number = number;
-    userExist.parentNumber = parentNumber;
-    userExist.email = email;
-    userExist.photo = photoUrl;
-    userExist.password = hashPassword(password);
+
+    const queryUpdate = `UPDATE \`dantion.dantion_big_query.users\`
+    SET name=@name, address=@address, number=@number, parentNumber=@parentNumber, email=@email, password=@password, photo=@photo, updatedAt=@updatedAt
+    WHERE id=@id`;
+    options = {
+        query: queryUpdate,
+        location: 'asia-southeast2',
+        params: { 
+            id: id, 
+            name: name,
+            address: address, 
+            number: number,
+            parentNumber: parentNumber, 
+            email: email,
+            password: hashPassword(password), 
+            photo: photo, 
+            updatedAt: new Date().toISOString()
+        }
+    };
+    await bigqueryClient.query(options);
 
     return res.json({
         status: "Sukses",

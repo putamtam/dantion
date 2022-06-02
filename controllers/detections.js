@@ -1,9 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
-import { detections, users } from '../models/dantion.js';
 import { Storage } from "@google-cloud/storage";
+import { bigqueryClient } from '../index.js';
 
-export const detectionAll = (req, res) => {
+export const detectionAll = async (req, res) => {
+    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\``;
+    let options = {
+        query: queryDetectExist,
+        location: 'asia-southeast2'
+    };
+    const [detections] = await bigqueryClient.query(options);
+
     return res.json({
         status: "Sukses",
         message: "Berhasil mendapatkan data detection",
@@ -11,7 +18,7 @@ export const detectionAll = (req, res) => {
     });
 }
 
-export const detectionAdd = (req, res) => {
+export const detectionAdd = async (req, res) => {
 	const { lat, lon, type, userId } = req.body;
 	const file = req.files.recordUrl;
 	const isValid = false;
@@ -30,8 +37,15 @@ export const detectionAdd = (req, res) => {
 			message: "Masukkan data dengan benar",
 		});
 	}
-	const userExist = users.find((user) => user.id === userId);
-	if (userExist === undefined) {
+	
+    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.admins\` WHERE id=@id`;
+    let options = {
+        query: queryUserExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [userExist] = await bigqueryClient.query(options);
+	if (userExist.length === 0) {
 		return res.status(400).json({
 			status: "Gagal",
 			message: "User tidak ditemukan",
@@ -46,23 +60,34 @@ export const detectionAdd = (req, res) => {
         res.status(500).send({ message: err.message });
     });
 
-    blobStream.on("finish", () => {
+    blobStream.on("finish", async () => {
         const id = "D-" + uuidv4();
         const createdAt = new Date().toISOString();
         const updatedAt = createdAt;
         const recordUrl = `https://storage.googleapis.com/${bucket.name}/records/${recordName}`;
-        const newDetection = {
-            id,
-            lat,
-            lon,
-            recordUrl,
-            type,
-            isValid,
-            userId,
-            createdAt,
-            updatedAt,
+
+        const queryNewDetection = `INSERT \`dantion.dantion_big_query.detections\`
+        (id, lat, lon, recordUrl, type, isValid, userId, createdAt, updatedAt) 
+        VALUES (@id, @lat, @lon, @recordUrl, @type, @isValid, @userId, @createdAt, @updatedAt)`;
+
+        options = {
+            query: queryNewDetection,
+            location: 'asia-southeast2',
+            params: {
+                id: id,
+                lat: lat,
+                lon: lon,
+                recordUrl: recordUrl,
+                type: type,
+                isValid: isValid,
+                userId: userId,
+                createdAt: createdAt,
+                updatedAt: updatedAt
+            }
         };
-        detections.push(newDetection);
+
+        await bigqueryClient.query(options);
+        
         return res.json({
             status: "Sukses",
             message: "Data berhasil ditambahkan",
@@ -71,11 +96,17 @@ export const detectionAdd = (req, res) => {
     blobStream.end(file.data);
 }
 
-export const detectionDetail = (req, res) => {
+export const detectionDetail = async (req, res) => {
     const { id } = req.params
 
-    const detectExist = detections.find((detect) => detect.id === id);
-    if(detectExist !== undefined) {
+    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    let options = {
+        query: queryDetectExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [detectExist] = await bigqueryClient.query(options);
+    if(detectExist.length !== 0) {
         return res.json({
             status: "Sukses",
             message: "Data berhasil ditemukan",
@@ -89,7 +120,7 @@ export const detectionDetail = (req, res) => {
     }
 }
 
-export const detectionUpdate = (req, res) => {
+export const detectionUpdate = async (req, res) => {
     const {
         id, isValid, idUserLogin
     } = req.body;
@@ -101,17 +132,29 @@ export const detectionUpdate = (req, res) => {
         });
     }
 
-    const detectExist = detections.find((detect) => detect.id === id);
-    if(detectExist === undefined) {
+    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    let options = {
+        query: queryDetectExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [detectExist] = await bigqueryClient.query(options);
+    if(detectExist.length === 0) {
         return res.json({
             status: "Gagal",
             message: "Data tidak ditemukan" 
         });
     }
-    const userRole = users.find((user) => user.id === idUserLogin);
+    
+    const queryUserExist = `SELECT role FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    options = {
+        query: queryUserExist,
+        location: 'asia-southeast2',
+        params: { id: idUserLogin }
+    };
+    const [userExist] = await bigqueryClient.query(options);
 
-    const updatedAt = new Date().toISOString();
-
+    const userRole = userExist[0].role;
     if (userRole !== "polisi" || userRole !== "ambulan" || userRole !== "damkar") {
         return res.json({
             status: "Gagal",
@@ -119,8 +162,22 @@ export const detectionUpdate = (req, res) => {
         });
     }
 
+    const updatedAt = new Date().toISOString();
     detectExist.isValid = isValid;
     detectExist.updatedAt = updatedAt;
+
+    const queryUpdate = `UPDATE \`dantion.dantion_big_query.detections\`
+    SET isValid=@isValid, updatedAt=@updatedAt WHERE id=@id`;
+    options = {
+        query: queryUpdate,
+        location: 'asia-southeast2',
+        params: { 
+            id: id, 
+            isValid: isValid, 
+            updatedAt: new Date().toISOString()
+        }
+    };
+    await bigqueryClient.query(options);
 
     return res.json({
         status: "Sukses",
@@ -128,7 +185,7 @@ export const detectionUpdate = (req, res) => {
     });
 }
 
-export const detectionDelete = (req, res) => {
+export const detectionDelete = async (req, res) => {
     const { id } = req.params;
     if(id === undefined) {
         return res.status(400).json({
@@ -136,14 +193,22 @@ export const detectionDelete = (req, res) => {
             message: "Masukkan data dengan benar"
         });
     }
-    const detectExist = detections.find((detect) => detect.id === id);
-    if(detectExist === undefined) {
+    
+    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    let options = {
+        query: queryDetectExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [rDetectExist] = await bigqueryClient.query(options);
+    if(rDetectExist.length === 0) {
         return res.status(400).json({
             status: "Gagal",
             message: " Data tidak ditemukan"
         });
     }
 
+    const detectExist = rDetectExist[0];
     const recordName = detectExist.recordUrl.split('/').slice(3).join('/');
     fs.unlink(`./${recordName}`, (err) => {
         if(err) {
@@ -154,8 +219,14 @@ export const detectionDelete = (req, res) => {
         }
     });
 
-    const index = detections.findIndex((detect) => detect.id === id);
-    detections.splice(index, 1);
+    const queryDeleteDetection = `DELETE \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    options = {
+        query: queryDeleteDetection,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    await bigqueryClient.query(options);
+
     return res.json({
         status: "Sukses",
         message: "Data berhasil dihapus"

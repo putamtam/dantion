@@ -1,7 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
-import { places } from '../models/dantion.js';
 
-export const placeAll = (req, res) => {
+export const placeAll = async (req, res) => {
+    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.places\``;
+    let options = {
+        query: queryDetectExist,
+        location: 'asia-southeast2'
+    };
+    const [places] = await bigqueryClient.query(options);
+
     return res.json({
         status: "Sukses",
         message: "Berhasil mendapatkan data place",
@@ -9,7 +15,7 @@ export const placeAll = (req, res) => {
     });
 }
 
-export const placeAdd = (req, res) => {
+export const placeAdd = async (req, res) => {
     const {
         lat, lon, radius, type
     } = req.body;
@@ -25,32 +31,47 @@ export const placeAdd = (req, res) => {
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
-    const newPlace = {
-        id,
-        lat,
-        lon,
-        radius,
-        type,
-        createdAt,
-        updatedAt
+    const queryNewPlace = `INSERT \`dantion.dantion_big_query.places\`
+    (id, lat, lon, radius, type, createdAt, updatedAt) 
+    VALUES (@id, @lat, @lon, @radius, @type, @createdAt, @updatedAt)`;
+
+    options = {
+        query: queryNewPlace,
+        location: 'asia-southeast2',
+        params: {
+            id: id,
+            lat: lat,
+            lon: lon,
+            radius: radius,
+            type: type,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        }
     };
 
-    places.push(newPlace);
+    await bigqueryClient.query(options);
+    
     return res.json({
         status: "Sukses",
         message: "Data berhasil ditambahkan"
     });
 }
 
-export const placeDetail = (req, res) => {
+export const placeDetail = async (req, res) => {
     const { id } = req.params
 
-    const placeExist = places.find((place) => place.id === id);
-    if(placeExist !== undefined) {
+    const queryPlaceExist = `SELECT * FROM \`dantion.dantion_big_query.places\` WHERE id=@id`;
+    let options = {
+        query: queryPlaceExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [placeExist] = await bigqueryClient.query(options);
+    if(placeExist.length !== 0) {
         return res.json({
             status: "Sukses",
             message: "Data berhasil ditemukan",
-            place: placeExist 
+            place: placeExist[0] 
         });
     } else {
         return res.status(400).json({
@@ -60,7 +81,7 @@ export const placeDetail = (req, res) => {
     }
 }
 
-export const placeUpdate = (req, res) => {
+export const placeUpdate = async (req, res) => {
     const {
         id, lat, lon, radius, type
     } = req.body;
@@ -72,8 +93,14 @@ export const placeUpdate = (req, res) => {
         });
     }
 
-    const placeExist = places.find((place) => place.id === id);
-    if(placeExist === undefined) {
+    const queryPlaceExist = `SELECT * FROM \`dantion.dantion_big_query.places\` WHERE id=@id`;
+    let options = {
+        query: queryPlaceExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [placeExist] = await bigqueryClient.query(options);
+    if(placeExist.length === 0) {
         return res.json({
             status: "Gagal",
             message: "Data tidak ditemukan" 
@@ -82,11 +109,21 @@ export const placeUpdate = (req, res) => {
 
     const updatedAt = new Date().toISOString();
 
-    placeExist.lat = lat;
-    placeExist.lon = lon;
-    placeExist.radius = radius;
-    placeExist.type = type;
-    placeExist.updatedAt = updatedAt;
+    const queryUpdate = `UPDATE \`dantion.dantion_big_query.places\`
+    SET lat=@lat, lon=@lon, radius=@radius, type=@type, updatedAt=@updatedAt WHERE id=@id`;
+    options = {
+        query: queryUpdate,
+        location: 'asia-southeast2',
+        params: { 
+            id: id,
+            lat: lat,
+            lon: lon,
+            radius: radius,
+            type: type, 
+            updatedAt: new Date().toISOString()
+        }
+    };
+    await bigqueryClient.query(options);
 
     return res.json({
         status: "Sukses",
@@ -94,7 +131,7 @@ export const placeUpdate = (req, res) => {
     });
 }
 
-export const placeDelete = (req, res) => {
+export const placeDelete = async (req, res) => {
     const { id } = req.params;
     
     if(id === undefined) {
@@ -104,14 +141,28 @@ export const placeDelete = (req, res) => {
         });
     }
 
-    const placeExist = places.findIndex((place) => place.id === id);
-    if(placeExist < 0) {
+    const queryPlaceExist = `SELECT * FROM \`dantion.dantion_big_query.places\` WHERE id=@id`;
+    let options = {
+        query: queryPlaceExist,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    const [placeExist] = await bigqueryClient.query(options);
+    if(placeExist.length === 0) {
         return res.status(400).json({
             status: "Gagal",
             message: "Data tidak ditemukan"
         });
     }
-    places.splice(placeExist, 1);
+    
+    const queryDeletePlace = `DELETE \`dantion.dantion_big_query.places\` WHERE id=@id`;
+    options = {
+        query: queryDeletePlace,
+        location: 'asia-southeast2',
+        params: { id: id }
+    };
+    await bigqueryClient.query(options);
+
     return res.json({
         status: "Sukses",
         message: "Data berhasil dihapus"
