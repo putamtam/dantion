@@ -4,7 +4,7 @@ info:
   description: "Dantion Endpoints API."
   title: "Endpoints Dantion"
   version: "1.0.0"
-host: "dangerdetection.appspot.com"
+host: "dangerdetection.et.r.appspot.com"
 tags:
   - name: "Admin"
     description: "Access to Admin orders"

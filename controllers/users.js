@@ -7,7 +7,7 @@ import { bigqueryClient } from '../index.js';
 export const userAll = async (req, res) => {
     const {id} = req.body
     
-    const queryAdminExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.admins\` WHERE id=@id`;
+    const queryAdminExist = `SELECT COUNT(email) AS emailCount FROM \`dangerdetection.dantion_big_query.admins\` WHERE id=@id`;
     let options = {
         query: queryAdminExist,
         location: 'asia-southeast2',
@@ -21,7 +21,7 @@ export const userAll = async (req, res) => {
         });
     }
 
-    const queryUserAll = `SELECT * FROM \`dantion.dantion_big_query.users\``;
+    const queryUserAll = `SELECT * FROM \`dangerdetection.dantion_big_query.users\``;
     options = {
         query: queryUserAll,
         location: 'asia-southeast2'
@@ -48,7 +48,7 @@ export const userRegister = async (req, res) => {
         });
     }
 
-    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.users\` WHERE email=@email`;
+    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dangerdetection.dantion_big_query.users\` WHERE email=@email`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -69,7 +69,7 @@ export const userRegister = async (req, res) => {
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
-    const queryNewUser = `INSERT \`dantion.dantion_big_query.users\`
+    const queryNewUser = `INSERT \`dangerdetection.dantion_big_query.users\`
     (id, name, address, number, parentNumber, email, password, role, photo, createdAt, updatedAt) 
     VALUES (@id, @name, @address, @number, @parentNumber, @email, @password, @role, @photo, @createdAt, @updatedAt)`;
 
@@ -109,7 +109,7 @@ export const userLogin = async (req, res) => {
         });
     }
 
-    const queryUserExist = `SELECT id, name, email, password FROM \`dantion.dantion_big_query.users\` WHERE email=@email`;
+    const queryUserExist = `SELECT id, name, email, password FROM \`dangerdetection.dantion_big_query.users\` WHERE email=@email`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -152,7 +152,7 @@ export const userLogin = async (req, res) => {
 export const userDetail = async (req, res) => {
     const { id } = req.params
 
-    const queryUserExist = `SELECT * FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    const queryUserExist = `SELECT * FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -198,7 +198,7 @@ export const userUpdate = async (req, res) => {
         });
     }
     
-    const queryUserExist = `SELECT * FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    const queryUserExist = `SELECT * FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -236,7 +236,7 @@ export const userUpdate = async (req, res) => {
         blobStream.end(file.data);
     }
 
-    const queryUpdate = `UPDATE \`dantion.dantion_big_query.users\`
+    const queryUpdate = `UPDATE \`dangerdetection.dantion_big_query.users\`
     SET name=@name, address=@address, number=@number, parentNumber=@parentNumber, email=@email, password=@password, photo=@photo, updatedAt=@updatedAt
     WHERE id=@id`;
     options = {
