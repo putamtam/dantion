@@ -645,12 +645,6 @@ definitions:
           - "kejahatan"
           - "kecelakaan"
           - "kebakaran"
-      status:
-        type: "string"
-        description: "Danger Detection Status"
-        enum:
-          - "pelapor"
-          - "korban"
       userId:
         type: "string"
   DetectionUpdateBody:
@@ -686,12 +680,6 @@ definitions:
       isValid:
         type: "boolean"
         default: false
-      status:
-        type: "string"
-        description: "Danger Detection Status"
-        enum:
-          - "pelapor"
-          - "korban"
       userId:
         type: "string"
       createdAt:

@@ -162,9 +162,9 @@ export const userUpdate = (req, res) => {
         const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
         const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
         const photoName = `PP-${userExist.id}.${ext}`;
-        photoUrl = `https://storage.googleapis.com/${bucket.name}/${photoName}`;
+        photoUrl = `https://storage.googleapis.com/${bucket.name}/users/${photoName}`;
 
-        const blob = bucket.file(photoName);
+        const blob = bucket.file(`users/${photoName}`);
         const blobStream = blob.createWriteStream();
 
         blobStream.on("error", (err) => {

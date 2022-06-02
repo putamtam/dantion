@@ -12,7 +12,7 @@ export const detectionAll = (req, res) => {
 }
 
 export const detectionAdd = (req, res) => {
-	const { lat, lon, type, status, userId } = req.body;
+	const { lat, lon, type, userId } = req.body;
 	const file = req.files.recordUrl;
 	const isValid = false;
     const storage = new Storage({ keyFilename: "gcp-storage.json" });
@@ -23,8 +23,7 @@ export const detectionAdd = (req, res) => {
 		lon === undefined ||
 		file === undefined ||
 		file === null ||
-		type === undefined ||
-		status === undefined
+		type === undefined
 	) {
 		return res.status(400).json({
 			status: "Gagal",
@@ -40,7 +39,7 @@ export const detectionAdd = (req, res) => {
 	}
     const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
     const recordName = `R-${type}-${uuidv4()}.${ext}`;
-    const blob = bucket.file(recordName);
+    const blob = bucket.file(`records/${recordName}`);
     const blobStream = blob.createWriteStream();
 
     blobStream.on("error", (err) => {
@@ -51,7 +50,7 @@ export const detectionAdd = (req, res) => {
         const id = "D-" + uuidv4();
         const createdAt = new Date().toISOString();
         const updatedAt = createdAt;
-        const recordUrl = `https://storage.googleapis.com/${bucket.name}/${recordName}`;
+        const recordUrl = `https://storage.googleapis.com/${bucket.name}/records/${recordName}`;
         const newDetection = {
             id,
             lat,
