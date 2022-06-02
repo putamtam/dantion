@@ -250,7 +250,7 @@ export const userUpdate = async (req, res) => {
             parentNumber: parentNumber, 
             email: email,
             password: hashPassword(password), 
-            photo: photo, 
+            photo: photoUrl, 
             updatedAt: new Date().toISOString()
         }
     };
