@@ -4,7 +4,10 @@ const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 import { BigQuery } from '@google-cloud/bigquery';
 
-export const bigqueryClient = new BigQuery({keyFilename: "bigquery.json", projectId: "dantion"});
+export const bigqueryClient = new BigQuery({
+	keyFilename: "dangerdetection-key.json",
+	projectId: "dangerdetection",
+});
 
 import express from 'express';
 import upload from 'express-fileupload';

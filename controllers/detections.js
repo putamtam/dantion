@@ -38,14 +38,14 @@ export const detectionAdd = async (req, res) => {
 		});
 	}
 	
-    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.admins\` WHERE id=@id`;
+    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
-        params: { id: id }
+        params: { id: userId }
     };
     const [userExist] = await bigqueryClient.query(options);
-	if (userExist.length === 0) {
+	if (userExist.emailCount === 0) {
 		return res.status(400).json({
 			status: "Gagal",
 			message: "User tidak ditemukan",
