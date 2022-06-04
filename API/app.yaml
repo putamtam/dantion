@@ -1,6 +1,0 @@
-runtime: nodejs
-env: flex
-
-beta_settings:
-  # Enable Google Cloud Endpoints API management.
-  use_endpoints_api_management: true
