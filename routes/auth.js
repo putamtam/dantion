@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '12h' });
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
 }
 
 export function authenticateToken(req, res, next) {

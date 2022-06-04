@@ -14,6 +14,8 @@ tags:
     description: "Access to Detections orders"
   - name: "Place"
     description: "Access to Place orders"
+  - name: "API-DOCS"
+    description: "Access to API orders"
 consumes:
   - "application/json"
 produces:
@@ -34,6 +36,28 @@ securityDefinitions:
     name: "Authorization"
     in: "header"
 paths:
+  "/":
+    post:
+      tags:
+        - "API-DOCS"
+      description: "Get index"
+      operationId: "index"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+  "/api-docs":
+    post:
+      tags:
+        - "API-DOCS"
+      description: "Get API Docs"
+      operationId: "getapidocs"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
   "/admins/userRole":
     patch:
       tags:
@@ -79,7 +103,7 @@ paths:
           schema:
             $ref: "#/definitions/StatusMessageResponse"
   "/users":
-    get:
+    post:
       tags:
         - "Users"
       description: "Get All User"

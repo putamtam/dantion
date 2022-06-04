@@ -1,6 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
-import { Storage } from "@google-cloud/storage";
+// import { Storage } from "@google-cloud/storage";
+// const { Storage } = require('@google-cloud/storage');
+import storagePackage from '@google-cloud/storage';
+const { Storage } = storagePackage;
+// const Storage = Storage;
 import { bigqueryClient } from '../index.js';
 
 export const detectionAll = async (req, res) => {
@@ -22,7 +26,7 @@ export const detectionAdd = async (req, res) => {
 	const { lat, lon, type, userId } = req.body;
 	const file = req.files.recordUrl;
 	const isValid = false;
-    const storage = new Storage({ keyFilename: "gcp-storage.json" });
+    const storage = new Storage({ keyFilename: "dangerdetection-key.json" });
 	const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
 	if (
 		userId === undefined ||

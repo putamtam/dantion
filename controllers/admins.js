@@ -1,5 +1,6 @@
 import { generateAccessToken } from '../routes/auth.js';
 import { checkPassword } from '../utils/helpers.js';
+import { bigqueryClient } from '../index.js';
 
 export const adminLogin = async (req, res) => {
     const { email, password } = req.body
@@ -19,15 +20,15 @@ export const adminLogin = async (req, res) => {
     };
     const [rAdminExist] = await bigqueryClient.query(options);
     if(rAdminExist.length === 0) {
-        return res.status(201).json({
-            status: "Sukses",
+        return res.status(400).json({
+            status: "Gagal",
             message: "Admin tidak terdaftar"
         });
     }
 
     const adminExist = rAdminExist[0];
     if(!checkPassword(password, adminExist.password)) {
-        return res.status(201).json({
+        return res.status(400).json({
             status: "Gagal",
             message: "Login gagal"
         });
