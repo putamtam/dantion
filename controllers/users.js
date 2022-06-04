@@ -10,7 +10,7 @@ const { Storage } = storagePackage;
 import { bigqueryClient } from '../index.js';
 
 export const userAll = async (req, res) => {
-    const {id} = req.body
+    const {id} = req.query
     if (id === undefined) {
         return res.status(400).json({
             status: "Gagal",
@@ -196,18 +196,68 @@ export const userDetail = async (req, res) => {
         });
     }
 }
+export const userUpdatePassword = async (req, res) => {
+	const { id, password, newPassword } = req.body;
+	if (
+		id === undefined ||
+		password === undefined ||
+        newPassword === undefined
+	) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "Gagal memperbarui user. Mohon isi data dengan benar",
+		});
+	}
+	const queryUserExist = `SELECT id, password FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
+	let options = {
+		query: queryUserExist,
+		location: "asia-southeast2",
+		params: { id: id },
+	};
+	const [rUserExist] = await bigqueryClient.query(options);
+	if (rUserExist.length === 0) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "User tidak ditemukan",
+		});
+	}
+	const userExist = rUserExist[0];
+    if (!checkPassword(password, userExist.password)) {
+        return res.status(400).json({
+            status: "Gagal",
+            message: "Ubah Kata Sandi Gagal",
+        });
+    }
+
+	const queryUpdate = `UPDATE \`dangerdetection.dantion_big_query.users\`
+    SET password=@password, updatedAt=@updatedAt
+    WHERE id=@id`;
+	options = {
+		query: queryUpdate,
+		location: "asia-southeast2",
+		params: {
+			id: id,
+			password: hashPassword(newPassword),
+			updatedAt: new Date().toISOString(),
+		},
+	};
+	await bigqueryClient.query(options);
+
+	return res.json({
+		status: "Sukses",
+		message: "Kata Sandi Berhasil diperbarui",
+	});
+};
 export const userUpdate = async (req, res) => {
     const {
-        id, name, address, number, parentNumber, email, password
+        id, name, address, number, parentNumber, email
     } = req.body;
-    const file = req.files.photo;
-    if (id === undefined || name === undefined || address === undefined || number === undefined || parentNumber === undefined || email === undefined || password === undefined) {
+    if (id === undefined || name === undefined || address === undefined || number === undefined || parentNumber === undefined || email === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Gagal memperbarui user. Mohon isi data dengan benar"
         });
     }
-    
     const queryUserExist = `SELECT * FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
     let options = {
         query: queryUserExist,
@@ -220,34 +270,9 @@ export const userUpdate = async (req, res) => {
             status: "Gagal",
             message: "User tidak ditemukan"
         });
-    } 
-
-    const userExist = rUserExist[0];
-
-    let photoUrl='';
-    if (file !== undefined && file !== null) {
-        const storage = new Storage({ keyFilename: "dangerdetection-key.json" });
-        const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
-        const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
-        const photoName = `PP-${userExist.id}.${ext}`;
-        photoUrl = `https://storage.googleapis.com/${bucket.name}/users/${photoName}`;
-
-        const blob = bucket.file(`users/${photoName}`);
-        const blobStream = blob.createWriteStream();
-
-        blobStream.on("error", (err) => {
-            return res.status(400).json({
-                status: "Gagal",
-                message: err,
-            });
-        });
-
-        blobStream.on("finish", () => {});
-        blobStream.end(file.data);
     }
-
     const queryUpdate = `UPDATE \`dangerdetection.dantion_big_query.users\`
-    SET name=@name, address=@address, number=@number, parentNumber=@parentNumber, email=@email, password=@password, photo=@photo, updatedAt=@updatedAt
+    SET name=@name, address=@address, number=@number, parentNumber=@parentNumber, email=@email, updatedAt=@updatedAt
     WHERE id=@id`;
     options = {
         query: queryUpdate,
@@ -259,8 +284,6 @@ export const userUpdate = async (req, res) => {
             number: number,
             parentNumber: parentNumber, 
             email: email,
-            password: hashPassword(password), 
-            photo: photoUrl,
             updatedAt: new Date().toISOString()
         }
     };
@@ -271,3 +294,69 @@ export const userUpdate = async (req, res) => {
         message: "User berhasil diupdate"
     });
 }
+
+export const userUpdatePhoto = async (req, res) => {
+	const {id} = req.query;
+    const file = req.files.photo
+
+	if (id === undefined) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "Gagal memperbarui user. Mohon isi data dengan benar",
+		});
+	}
+	const queryUserExist = `SELECT * FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
+	let options = {
+		query: queryUserExist,
+		location: "asia-southeast2",
+		params: { id: id },
+	};
+	const [rUserExist] = await bigqueryClient.query(options);
+	if (rUserExist.length === 0) {
+		return res.status(400).json({
+			status: "Gagal",
+			message: "User tidak ditemukan",
+		});
+	}
+	const userExist = rUserExist[0];
+	let photoUrl = userExist.photoUrl;
+	if (file !== undefined && file !== null ) {
+		const storage = new Storage({ keyFilename: "dangerdetection-key.json" });
+		const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
+		const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
+		const photoName = `PP-${userExist.id}.${ext}`;
+		photoUrl = `https://storage.googleapis.com/${bucket.name}/users/${photoName}`;
+
+		const blob = bucket.file(`users/${photoName}`);
+		const blobStream = blob.createWriteStream();
+
+		blobStream.on("error", (err) => {
+			return res.status(400).json({
+				status: "Gagal",
+				message: err,
+			});
+		});
+
+		blobStream.on("finish", () => {});
+		blobStream.end(file.data);
+	}
+
+	const queryUpdate = `UPDATE \`dangerdetection.dantion_big_query.users\`
+    SET photo=@photo, updatedAt=@updatedAt
+    WHERE id=@id`;
+	options = {
+		query: queryUpdate,
+		location: "asia-southeast2",
+		params: {
+			id: id,
+			photo: photoUrl,
+			updatedAt: new Date().toISOString(),
+		},
+	};
+	await bigqueryClient.query(options);
+
+	return res.json({
+		status: "Sukses",
+		message: "Foto User berhasil diupdate",
+	});
+};

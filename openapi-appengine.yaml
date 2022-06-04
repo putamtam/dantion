@@ -37,7 +37,7 @@ securityDefinitions:
     in: "header"
 paths:
   "/":
-    post:
+    get:
       tags:
         - "API-DOCS"
       description: "Get index"
@@ -48,7 +48,7 @@ paths:
           schema:
             type: string
   "/api-docs":
-    post:
+    get:
       tags:
         - "API-DOCS"
       description: "Get API Docs"
@@ -103,7 +103,7 @@ paths:
           schema:
             $ref: "#/definitions/StatusMessageResponse"
   "/users":
-    post:
+    get:
       tags:
         - "Users"
       description: "Get All User"
@@ -111,11 +111,10 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - in: body
-          name: all User
-          description: Request body for all user.
-          schema:
-            $ref: "#/definitions/UserAllBody"
+        - in: query
+          type: string
+          name: id
+          description: Id Admin
       responses:
         201:
           description: "success get all user"
@@ -216,6 +215,60 @@ paths:
             $ref: "#/definitions/UserLoginResponse"
         400:
           description: "failed login user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/users/photo":
+    patch:
+      tags:
+        - "Users"
+      description: "Update Photo User"
+      operationId: "updatephotouser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: query
+          type: string
+          name: id
+          description: Id User
+        - in: body
+          name: Update Photo User
+          description: Request body for update user.
+          schema:
+            $ref: "#/definitions/UserUpdatePhotoBody"
+      responses:
+        201:
+          description: "success update photo user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed update photo user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/users/password":
+    patch:
+      tags:
+        - "Users"
+      description: "Update Password User"
+      operationId: "updatepassworduser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: query
+          type: string
+          name: id
+          description: Id User
+        - in: body
+          name: Update Password User
+          description: Request body for update user.
+          schema:
+            $ref: "#/definitions/UserUpdatePasswordBody"
+      responses:
+        201:
+          description: "success update password user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed update password user"
           schema:
             $ref: "#/definitions/StatusMessageResponse"
   "/detections":
@@ -533,6 +586,7 @@ definitions:
           - "damkar"
       photo:
         type: "string"
+        format: "binary"
       createdAt:
         type: "string"
         format: "date-time"
@@ -581,6 +635,21 @@ definitions:
         type: "string"
   UserUpdateBody:
     $ref: "#/definitions/UserRegisterBody"
+  UserUpdatePhotoBody:
+    type: "object"
+    properties:
+      photo:
+        type: "string"
+        format: "binary"
+  UserUpdatePasswordBody:
+    type: "object"
+    properties:
+      password:
+        type: "string"
+        format: "password"
+      newPassword:
+        type: "string"
+        format: "password"
   Detection:
     type: "object"
     properties:
@@ -644,14 +713,21 @@ definitions:
           - "kebakaran"
       userId:
         type: "string"
+      city:
+        type: "string"
   DetectionUpdateBody:
     type: "object"
     properties:
       id:
         type: "string"
-      isValid:
+      status:
         type: "boolean"
-        default: false
+        default: "invalid"
+        enum:
+          - "invalid"
+          - "selesai"
+          - "tolak"
+          - "valid"
       idUserLogin:
         type: "string"
   Place:
@@ -674,11 +750,6 @@ definitions:
           - "kejahatan"
           - "kecelakaan"
           - "kebakaran"
-      isValid:
-        type: "boolean"
-        default: false
-      userId:
-        type: "string"
       createdAt:
         type: "string"
         format: "date-time"

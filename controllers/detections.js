@@ -23,9 +23,9 @@ export const detectionAll = async (req, res) => {
 }
 
 export const detectionAdd = async (req, res) => {
-	const { lat, lon, type, userId } = req.body;
+	const { lat, lon, type, userId, city } = req.body;
 	const file = req.files.recordUrl;
-	const isValid = false;
+	const status = "invalid";
     const storage = new Storage({ keyFilename: "dangerdetection-key.json" });
 	const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
 	if (
@@ -34,7 +34,8 @@ export const detectionAdd = async (req, res) => {
 		lon === undefined ||
 		file === undefined ||
 		file === null ||
-		type === undefined
+		type === undefined ||
+		city === undefined
 	) {
 		return res.status(400).json({
 			status: "Gagal",
@@ -71,8 +72,8 @@ export const detectionAdd = async (req, res) => {
         const recordUrl = `https://storage.googleapis.com/${bucket.name}/records/${recordName}`;
 
         const queryNewDetection = `INSERT \`dangerdetection.dantion_big_query.detections\`
-        (id, lat, lon, recordUrl, type, isValid, userId, createdAt, updatedAt) 
-        VALUES (@id, @lat, @lon, @recordUrl, @type, @isValid, @userId, @createdAt, @updatedAt)`;
+        (id, lat, lon, recordUrl, type, status, userId, createdAt, updatedAt, city)
+        VALUES (@id, @lat, @lon, @recordUrl, @type, @status, @userId, @createdAt, @updatedAt, @city)`;
 
         options = {
             query: queryNewDetection,
@@ -83,15 +84,15 @@ export const detectionAdd = async (req, res) => {
                 lon: lon,
                 recordUrl: recordUrl,
                 type: type,
-                isValid: isValid,
+                status: status,
                 userId: userId,
+                city: city,
                 createdAt: createdAt,
                 updatedAt: updatedAt
             }
         };
 
         await bigqueryClient.query(options);
-        
         return res.json({
             status: "Sukses",
             message: "Data berhasil ditambahkan",
@@ -126,10 +127,10 @@ export const detectionDetail = async (req, res) => {
 
 export const detectionUpdate = async (req, res) => {
     const {
-        id, isValid, idUserLogin
+        id, status, idUserLogin
     } = req.body;
 
-    if(id === undefined || isValid === undefined) {
+    if(id === undefined || status === undefined) {
         return res.status(400).json({
             status: "Gagal",
             message: "Masukkan data dengan benar"
@@ -159,6 +160,7 @@ export const detectionUpdate = async (req, res) => {
     const [userExist] = await bigqueryClient.query(options);
 
     const userRole = userExist[0].role;
+    const validatorId = userExist[0].validatorId;
     if (userRole !== "polisi" || userRole !== "ambulan" || userRole !== "damkar") {
         return res.json({
             status: "Gagal",
@@ -167,19 +169,20 @@ export const detectionUpdate = async (req, res) => {
     }
 
     const updatedAt = new Date().toISOString();
-    detectExist.isValid = isValid;
+    detectExist.status = status;
     detectExist.updatedAt = updatedAt;
 
     const queryUpdate = `UPDATE \`dangerdetection.dantion_big_query.detections\`
-    SET isValid=@isValid, updatedAt=@updatedAt WHERE id=@id`;
+    SET status=@status, updatedAt=@updatedAt, validatorId=@validatorId WHERE id=@id`;
     options = {
         query: queryUpdate,
-        location: 'asia-southeast2',
-        params: { 
-            id: id, 
-            isValid: isValid, 
-            updatedAt: new Date().toISOString()
-        }
+        location: "asia-southeast2",
+        params: {
+            id: id,
+            status: status,
+            validatorId: validatorId,
+            updatedAt: new Date().toISOString(),
+        },
     };
     await bigqueryClient.query(options);
 
