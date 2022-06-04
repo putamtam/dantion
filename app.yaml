@@ -2,9 +2,9 @@ runtime: nodejs
 env: flex
 
 env_variables:
-  GCLOUD_STORAGE_BUCKET: dantion-api-tes
+  GCLOUD_STORAGE_BUCKET: dangerdetection.appspot.com
 endpoints_api_service:
   # The following values are to be replaced by information from the output of
   # 'gcloud endpoints services deploy openapi-appengine.yaml' command.
-  name: dantion.appspot.com
+  name: dangerdetection.appspot.com
   rollout_strategy: managed

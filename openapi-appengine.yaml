@@ -4,7 +4,7 @@ info:
   description: "Dantion Endpoints API."
   title: "Endpoints Dantion"
   version: "1.0.0"
-host: "dantion.et.r.appspot.com"
+host: "dangerdetection.appspot.com"
 tags:
   - name: "Admin"
     description: "Access to Admin orders"
@@ -14,6 +14,8 @@ tags:
     description: "Access to Detections orders"
   - name: "Place"
     description: "Access to Place orders"
+  - name: "API-DOCS"
+    description: "Access to API orders"
 consumes:
   - "application/json"
 produces:
@@ -22,51 +24,40 @@ schemes:
   - "https"
   - "http"
 
-# components:
-#   securitySchemes:
-#     bearerAuth:
-#       type: http
-#       scheme: bearer
-#       bearerFormat: JWT
-#   responses:
-#     UnauthorizedError:
-#       description: Access token is missing or invalid
-
-# This section requires all requests to any path to require an API key.
-security:
-  # - api_key: ['AIzaSyAMiyLWcIlzAZnQWciTMLQjIARqla9zzxc']
-  - api_key: []
+# security:
+#   - api_key: []
 securityDefinitions:
-  # This section configures basic authentication with an API key.
-  api_key:
-    type: "apiKey"
-    name: "key"
-    in: "query"
+  # api_key:
+  #   type: "apiKey"
+  #   name: "key"
+  #   in: "query"
   Bearer:
     type: "apiKey"
     name: "Authorization"
     in: "header"
-  # This section configures authentication using Google API Service Accounts
-  # to sign a json web token. This is mostly used for server-to-server
-  # communication.
-  # google_jwt:
-  #   authorizationUrl: ""
-  #   flow: "implicit"
-  #   type: "oauth2"
-  #   # This must match the 'iss' field in the JWT.
-  #   x-google-issuer: "jwt-client.endpoints.sample.google.com"
-  #   # Update this with your service account's email address.
-  #   x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/jwk/YOUR-SERVICE-ACCOUNT-EMAIL"
-  # # This section configures authentication using Google OAuth2 ID Tokens.
-  # # ID Tokens can be obtained using OAuth2 clients, and can be used to access
-  # # your API on behalf of a particular user.
-  # google_id_token:
-  #   authorizationUrl: ""
-  #   flow: "implicit"
-  #   type: "oauth2"
-  #   x-google-issuer: "accounts.google.com"
-  #   x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
 paths:
+  "/":
+    post:
+      tags:
+        - "API-DOCS"
+      description: "Get index"
+      operationId: "index"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+  "/api-docs":
+    post:
+      tags:
+        - "API-DOCS"
+      description: "Get API Docs"
+      operationId: "getapidocs"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
   "/admins/userRole":
     patch:
       tags:
@@ -112,7 +103,7 @@ paths:
           schema:
             $ref: "#/definitions/StatusMessageResponse"
   "/users":
-    get:
+    post:
       tags:
         - "Users"
       description: "Get All User"
@@ -610,10 +601,16 @@ definitions:
           - "kejahatan"
           - "kecelakaan"
           - "kebakaran"
-      isValid:
-        type: "boolean"
-        default: false
+      status:
+        type: "string"
+        enum:
+          - "invalid"
+          - "valid"
+          - "selesai"
+          - "tolak"
       userId:
+        type: "string"
+      validatorId:
         type: "string"
       createdAt:
         type: "string"

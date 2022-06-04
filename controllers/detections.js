@@ -1,10 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
-import { Storage } from "@google-cloud/storage";
+// import { Storage } from "@google-cloud/storage";
+// const { Storage } = require('@google-cloud/storage');
+import storagePackage from '@google-cloud/storage';
+const { Storage } = storagePackage;
+// const Storage = Storage;
 import { bigqueryClient } from '../index.js';
 
 export const detectionAll = async (req, res) => {
-    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\``;
+    const queryDetectExist = `SELECT * FROM \`dangerdetection.dantion_big_query.detections\``;
     let options = {
         query: queryDetectExist,
         location: 'asia-southeast2'
@@ -22,7 +26,7 @@ export const detectionAdd = async (req, res) => {
 	const { lat, lon, type, userId } = req.body;
 	const file = req.files.recordUrl;
 	const isValid = false;
-    const storage = new Storage({ keyFilename: "gcp-storage.json" });
+    const storage = new Storage({ keyFilename: "dangerdetection-key.json" });
 	const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
 	if (
 		userId === undefined ||
@@ -38,14 +42,14 @@ export const detectionAdd = async (req, res) => {
 		});
 	}
 	
-    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.admins\` WHERE id=@id`;
+    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
-        params: { id: id }
+        params: { id: userId }
     };
     const [userExist] = await bigqueryClient.query(options);
-	if (userExist.length === 0) {
+	if (userExist.emailCount === 0) {
 		return res.status(400).json({
 			status: "Gagal",
 			message: "User tidak ditemukan",
@@ -66,7 +70,7 @@ export const detectionAdd = async (req, res) => {
         const updatedAt = createdAt;
         const recordUrl = `https://storage.googleapis.com/${bucket.name}/records/${recordName}`;
 
-        const queryNewDetection = `INSERT \`dantion.dantion_big_query.detections\`
+        const queryNewDetection = `INSERT \`dangerdetection.dantion_big_query.detections\`
         (id, lat, lon, recordUrl, type, isValid, userId, createdAt, updatedAt) 
         VALUES (@id, @lat, @lon, @recordUrl, @type, @isValid, @userId, @createdAt, @updatedAt)`;
 
@@ -99,7 +103,7 @@ export const detectionAdd = async (req, res) => {
 export const detectionDetail = async (req, res) => {
     const { id } = req.params
 
-    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    const queryDetectExist = `SELECT * FROM \`dangerdetection.dantion_big_query.detections\` WHERE id=@id`;
     let options = {
         query: queryDetectExist,
         location: 'asia-southeast2',
@@ -132,7 +136,7 @@ export const detectionUpdate = async (req, res) => {
         });
     }
 
-    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    const queryDetectExist = `SELECT * FROM \`dangerdetection.dantion_big_query.detections\` WHERE id=@id`;
     let options = {
         query: queryDetectExist,
         location: 'asia-southeast2',
@@ -146,7 +150,7 @@ export const detectionUpdate = async (req, res) => {
         });
     }
     
-    const queryUserExist = `SELECT role FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    const queryUserExist = `SELECT role FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
     options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -166,7 +170,7 @@ export const detectionUpdate = async (req, res) => {
     detectExist.isValid = isValid;
     detectExist.updatedAt = updatedAt;
 
-    const queryUpdate = `UPDATE \`dantion.dantion_big_query.detections\`
+    const queryUpdate = `UPDATE \`dangerdetection.dantion_big_query.detections\`
     SET isValid=@isValid, updatedAt=@updatedAt WHERE id=@id`;
     options = {
         query: queryUpdate,
@@ -194,7 +198,7 @@ export const detectionDelete = async (req, res) => {
         });
     }
     
-    const queryDetectExist = `SELECT * FROM \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    const queryDetectExist = `SELECT * FROM \`dangerdetection.dantion_big_query.detections\` WHERE id=@id`;
     let options = {
         query: queryDetectExist,
         location: 'asia-southeast2',
@@ -219,7 +223,7 @@ export const detectionDelete = async (req, res) => {
         }
     });
 
-    const queryDeleteDetection = `DELETE \`dantion.dantion_big_query.detections\` WHERE id=@id`;
+    const queryDeleteDetection = `DELETE \`dangerdetection.dantion_big_query.detections\` WHERE id=@id`;
     options = {
         query: queryDeleteDetection,
         location: 'asia-southeast2',

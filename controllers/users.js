@@ -1,27 +1,37 @@
 import { generateAccessToken } from '../routes/auth.js';
 import { hashPassword, checkPassword } from '../utils/helpers.js';
 import { v4 as uuidv4 } from 'uuid';
-import { Storage } from "@google-cloud/storage";
+// import { Storage } from "@google-cloud/storage";
+// import { Storage } from "@google-cloud/storage";
+// const { Storage } = require('@google-cloud/storage');
+import storagePackage from '@google-cloud/storage';
+const { Storage } = storagePackage;
+// const Storage = Storage;
 import { bigqueryClient } from '../index.js';
 
 export const userAll = async (req, res) => {
     const {id} = req.body
-    
-    const queryAdminExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.admins\` WHERE id=@id`;
+    if (id === undefined) {
+        return res.status(400).json({
+            status: "Gagal",
+            message: "Gagal mengambil user. Mohon isi data dengan benar"
+        });
+    }
+    const queryAdminExist = `SELECT * FROM \`dangerdetection.dantion_big_query.admins\` WHERE id=@id`;
     let options = {
         query: queryAdminExist,
         location: 'asia-southeast2',
         params: { id: id }
     };
     const [adminsExist] = await bigqueryClient.query(options);
-    if (adminsExist.emailCount === 0){
+    if (adminsExist.length === 0){
         return res.status(400).json({
             status: "Gagal",
             message: "Gagal melihat user, Anda tidak berhak",
         });
     }
 
-    const queryUserAll = `SELECT * FROM \`dantion.dantion_big_query.users\``;
+    const queryUserAll = `SELECT * FROM \`dangerdetection.dantion_big_query.users\``;
     options = {
         query: queryUserAll,
         location: 'asia-southeast2'
@@ -48,7 +58,7 @@ export const userRegister = async (req, res) => {
         });
     }
 
-    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dantion.dantion_big_query.users\` WHERE email=@email`;
+    const queryUserExist = `SELECT COUNT(email) AS emailCount FROM \`dangerdetection.dantion_big_query.users\` WHERE email=@email`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -69,7 +79,7 @@ export const userRegister = async (req, res) => {
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
-    const queryNewUser = `INSERT \`dantion.dantion_big_query.users\`
+    const queryNewUser = `INSERT \`dangerdetection.dantion_big_query.users\`
     (id, name, address, number, parentNumber, email, password, role, photo, createdAt, updatedAt) 
     VALUES (@id, @name, @address, @number, @parentNumber, @email, @password, @role, @photo, @createdAt, @updatedAt)`;
 
@@ -109,7 +119,7 @@ export const userLogin = async (req, res) => {
         });
     }
 
-    const queryUserExist = `SELECT id, name, email, password FROM \`dantion.dantion_big_query.users\` WHERE email=@email`;
+    const queryUserExist = `SELECT id, name, email, password FROM \`dangerdetection.dantion_big_query.users\` WHERE email=@email`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -118,15 +128,15 @@ export const userLogin = async (req, res) => {
     const [rUserExist] = await bigqueryClient.query(options);
 
     if(rUserExist.length === 0) {
-        return res.status(201).json({
-            status: "Sukses",
+        return res.status(400).json({
+            status: "Gagal",
             message: "User tidak terdaftar"
         });
     }
 
     const userExist = rUserExist[0];
     if(!checkPassword(password, userExist.password)) {
-        return res.status(201).json({
+        return res.status(400).json({
             status: "Gagal",
             message: "Login gagal"
         });
@@ -152,7 +162,7 @@ export const userLogin = async (req, res) => {
 export const userDetail = async (req, res) => {
     const { id } = req.params
 
-    const queryUserExist = `SELECT * FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    const queryUserExist = `SELECT * FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -198,7 +208,7 @@ export const userUpdate = async (req, res) => {
         });
     }
     
-    const queryUserExist = `SELECT * FROM \`dantion.dantion_big_query.users\` WHERE id=@id`;
+    const queryUserExist = `SELECT * FROM \`dangerdetection.dantion_big_query.users\` WHERE id=@id`;
     let options = {
         query: queryUserExist,
         location: 'asia-southeast2',
@@ -216,7 +226,7 @@ export const userUpdate = async (req, res) => {
 
     let photoUrl='';
     if (file !== undefined && file !== null) {
-        const storage = new Storage({ keyFilename: "gcp-storage.json" });
+        const storage = new Storage({ keyFilename: "dangerdetection-key.json" });
         const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
         const ext = file.name.split(".").filter(Boolean).slice(1).join(".");
         const photoName = `PP-${userExist.id}.${ext}`;
@@ -236,7 +246,7 @@ export const userUpdate = async (req, res) => {
         blobStream.end(file.data);
     }
 
-    const queryUpdate = `UPDATE \`dantion.dantion_big_query.users\`
+    const queryUpdate = `UPDATE \`dangerdetection.dantion_big_query.users\`
     SET name=@name, address=@address, number=@number, parentNumber=@parentNumber, email=@email, password=@password, photo=@photo, updatedAt=@updatedAt
     WHERE id=@id`;
     options = {
@@ -250,7 +260,7 @@ export const userUpdate = async (req, res) => {
             parentNumber: parentNumber, 
             email: email,
             password: hashPassword(password), 
-            photo: photoUrl, 
+            photo: photoUrl,
             updatedAt: new Date().toISOString()
         }
     };

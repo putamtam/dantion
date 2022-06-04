@@ -2,9 +2,16 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
-import { BigQuery } from '@google-cloud/bigquery';
+import bigQueryPackage from '@google-cloud/bigquery';
+const { BigQuery } = bigQueryPackage;
+// const { BigQuery } = require('@google-cloud/bigquery');
 
-export const bigqueryClient = new BigQuery({keyFilename: "bigquery.json", projectId: "dantion"});
+// const bigQuery = BigQuery;
+
+export const bigqueryClient = new BigQuery({
+	keyFilename: "dangerdetection-key.json",
+	projectId: "dangerdetection",
+});
 
 import express from 'express';
 import upload from 'express-fileupload';
