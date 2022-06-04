@@ -1,0 +1,734 @@
+swagger: "2.0"
+# openapi: 3.0.3
+info:
+  description: "Dantion Endpoints API."
+  title: "Endpoints Dantion"
+  version: "1.0.0"
+host: "dangerdetection.appspot.com"
+tags:
+  - name: "Admin"
+    description: "Access to Admin orders"
+  - name: "Users"
+    description: "Access to Users orders"
+  - name: "Detections"
+    description: "Access to Detections orders"
+  - name: "Place"
+    description: "Access to Place orders"
+  - name: "API-DOCS"
+    description: "Access to API orders"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+schemes:
+  - "https"
+  - "http"
+
+# security:
+#   - api_key: []
+securityDefinitions:
+  # api_key:
+  #   type: "apiKey"
+  #   name: "key"
+  #   in: "query"
+  Bearer:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+paths:
+  "/":
+    post:
+      tags:
+        - "API-DOCS"
+      description: "Get index"
+      operationId: "index"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+  "/api-docs":
+    post:
+      tags:
+        - "API-DOCS"
+      description: "Get API Docs"
+      operationId: "getapidocs"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+  "/admins/userRole":
+    patch:
+      tags:
+        - "Admin"
+      security:
+        - Bearer: []
+      description: "Update User Role"
+      operationId: "UserRole"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Admin Update User Role
+          description: Request body for update user role.
+          schema:
+            $ref: "#/definitions/AdminUpdateUserRoleBody"
+      responses:
+        201:
+          description: "Success update user role"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/admins/login":
+    post:
+      tags:
+        - "Admin"
+      description: "Login Admin"
+      operationId: "loginadmin"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Admin Login
+          description: Request body for login admin.
+          schema:
+            $ref: "#/definitions/AdminLoginBody"
+      responses:
+        201:
+          description: "success login admin"
+          schema:
+            $ref: "#/definitions/AdminLoginResponse"
+        400:
+          description: "failed login admin"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/users":
+    post:
+      tags:
+        - "Users"
+      description: "Get All User"
+      operationId: "getuser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: all User
+          description: Request body for all user.
+          schema:
+            $ref: "#/definitions/UserAllBody"
+      responses:
+        201:
+          description: "success get all user"
+          schema:
+            $ref: "#/definitions/UserSuccessResponse"
+        400:
+          description: "failed get all user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    patch:
+      tags:
+        - "Users"
+      description: "Update User"
+      operationId: "updateuser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Update User
+          description: Request body for update user.
+          schema:
+            $ref: "#/definitions/UserUpdateBody"
+      responses:
+        201:
+          description: "success update user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed get all user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/users/{id}":
+    get:
+      tags:
+        - "Users"
+      security:
+        - Bearer: []
+      description: "Get User Using ID"
+      operationId: "Userid"
+      produces:
+        - "application/json"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of user"
+          required: true
+          type: "string"
+      responses:
+        201:
+          description: "success get detail User"
+          schema:
+            $ref: "#/definitions/UserSuccessResponse"
+        400:
+          description: "failed get detail User"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/users/register":
+    post:
+      tags:
+        - "Users"
+      description: "Register User"
+      operationId: "registeruser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Register User
+          description: Request body for register user.
+          schema:
+            $ref: "#/definitions/UserRegisterBody"
+      responses:
+        201:
+          description: "success register user"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "failed register user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/users/login":
+    post:
+      tags:
+        - "Users"
+      description: "Login User"
+      operationId: "loginuser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Login User
+          description: Request body for login user.
+          schema:
+            $ref: "#/definitions/UserLoginBody"
+      responses:
+        201:
+          description: "success login user"
+          schema:
+            $ref: "#/definitions/UserLoginResponse"
+        400:
+          description: "failed login user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/detections":
+    get:
+      tags:
+        - "Detections"
+      security:
+        - Bearer: []
+      description: "Get All Detection"
+      operationId: "alldetection"
+      produces:
+        - "application/json"
+      responses:
+        201:
+          description: "success get all detection"
+          schema:
+            $ref: "#/definitions/DetectionSuccessResponse"
+        400:
+          description: "failed get all detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    post:
+      tags:
+        - "Detections"
+      security:
+        - Bearer: []
+      description: "Add Detection"
+      operationId: "adddetection"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Add detection
+          description: Request body for add detection.
+          schema:
+            $ref: "#/definitions/AddDetectionBody"
+      responses:
+        201:
+          description: "success add detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed login user"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    patch:
+      tags:
+        - "Detections"
+      security:
+        - Bearer: []
+      description: "Update Detection"
+      operationId: "updatedetection"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Update detection
+          description: Request body for Update detection.
+          schema:
+            $ref: "#/definitions/DetectionUpdateBody"
+      responses:
+        201:
+          description: "success update detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed update detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/detections/{id}":
+    get:
+      tags:
+        - "Detections"
+      security:
+        - Bearer: []
+      description: "Get Detection Using ID"
+      operationId: "detectionId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of detection"
+          required: true
+          type: "string"
+      responses:
+        201:
+          description: "success get detail detection"
+          schema:
+            $ref: "#/definitions/DetectionSuccessResponse"
+        400:
+          description: "failed get detail detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    delete:
+      tags:
+        - "Detections"
+      security:
+        - Bearer: []
+      description: "Delete Detection ID"
+      operationId: "deleteDetection"
+      produces:
+        - "application/json"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of detection"
+          required: true
+          type: "string"
+      responses:
+        201:
+          description: "success delete detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed delete detection"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/places":
+    get:
+      tags:
+        - "Place"
+      security:
+        - Bearer: []
+      description: "Get All Place"
+      operationId: "allPlace"
+      produces:
+        - "application/json"
+      responses:
+        201:
+          description: "success get all place"
+          schema:
+            $ref: "#/definitions/PlaceSuccessResponse"
+        400:
+          description: "failed get all place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    post:
+      tags:
+        - "Place"
+      security:
+        - Bearer: []
+      description: "Add Place"
+      operationId: "addPlace"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Add place
+          description: Request body for add place.
+          schema:
+            $ref: "#/definitions/AddPlaceBody"
+      responses:
+        201:
+          description: "success add place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed add place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    patch:
+      tags:
+        - "Place"
+      security:
+        - Bearer: []
+      description: "Update Place"
+      operationId: "updatePlace"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: Update place
+          description: Request body for update place.
+          schema:
+            $ref: "#/definitions/UpdatePlaceBody"
+      responses:
+        201:
+          description: "success update place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed update place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+  "/places/{id}":
+    get:
+      tags:
+        - "Place"
+      security:
+        - Bearer: []
+      description: "Get Place Using ID"
+      operationId: "Placeid"
+      produces:
+        - "application/json"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of places"
+          required: true
+          type: "string"
+      responses:
+        201:
+          description: "success get detail place"
+          schema:
+            $ref: "#/definitions/PlaceSuccessResponse"
+        400:
+          description: "failed get detail place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+    delete:
+      tags:
+        - "Place"
+      security:
+        - Bearer: []
+      description: "Delete Place ID"
+      operationId: "deletePlace"
+      produces:
+        - "application/json"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of places"
+          required: true
+          type: "string"
+      responses:
+        201:
+          description: "success get delete place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+        400:
+          description: "failed get delete place"
+          schema:
+            $ref: "#/definitions/StatusMessageResponse"
+definitions:
+  StatusMessageResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+  AdminLoginResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      loginResult:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+          name:
+            type: "string"
+          email:
+            type: "string"
+          token:
+            type: "string"
+  AdminLoginBody:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+  AdminUpdateBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+  AdminUpdateUserRoleBody:
+    type: "object"
+    properties:
+      userId:
+        type: "string"
+      role:
+        type: "string"
+        enum:
+          - "polisi"
+          - "ambulan"
+          - "damkar"
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      number:
+        type: "string"
+      parentNumber:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+      role:
+        type: "string"
+        enum:
+          - "admin"
+          - "polisi"
+          - "ambulan"
+          - "damkar"
+      photo:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      updatedAt:
+        type: "string"
+        format: "date-time"
+  UserLoginResponse:
+    $ref: "#/definitions/AdminLoginResponse"
+  UserSuccessResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      user:
+        $ref: "#/definitions/User"
+  UserLoginBody:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+  UserRegisterBody:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      number:
+        type: "string"
+      parentNumber:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+        format: "password"
+  UserAllBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+  UserUpdateBody:
+    $ref: "#/definitions/UserRegisterBody"
+  Detection:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      recordUrl:
+        type: "string"
+        format: "binary"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
+      status:
+        type: "string"
+        enum:
+          - "invalid"
+          - "valid"
+          - "selesai"
+          - "tolak"
+      userId:
+        type: "string"
+      validatorId:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      updatedAt:
+        type: "string"
+        format: "date-time"
+  DetectionSuccessResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      user:
+        $ref: "#/definitions/Detection"
+  AddDetectionBody:
+    type: "object"
+    properties:
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
+      userId:
+        type: "string"
+  DetectionUpdateBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      isValid:
+        type: "boolean"
+        default: false
+      idUserLogin:
+        type: "string"
+  Place:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      radius:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
+      isValid:
+        type: "boolean"
+        default: false
+      userId:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      updatedAt:
+        type: "string"
+        format: "date-time"
+  PlaceSuccessResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      user:
+        $ref: "#/definitions/Place"
+  AddPlaceBody:
+    type: "object"
+    properties:
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      radius:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
+  UpdatePlaceBody:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      lat:
+        type: "number"
+        format: "double"
+      lon:
+        type: "number"
+        format: "double"
+      radius:
+        type: "number"
+        format: "double"
+      type:
+        type: "string"
+        enum:
+          - "kejahatan"
+          - "kecelakaan"
+          - "kebakaran"
