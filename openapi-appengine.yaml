@@ -4,7 +4,7 @@ info:
   description: "Dantion Endpoints API."
   title: "Endpoints Dantion"
   version: "1.0.0"
-host: "dangerdetection.et.r.appspot.com"
+host: "dangerdetection.appspot.com"
 tags:
   - name: "Admin"
     description: "Access to Admin orders"
@@ -22,13 +22,13 @@ schemes:
   - "https"
   - "http"
 
-security:
-  - api_key: []
+# security:
+#   - api_key: []
 securityDefinitions:
-  api_key:
-    type: "apiKey"
-    name: "key"
-    in: "query"
+  # api_key:
+  #   type: "apiKey"
+  #   name: "key"
+  #   in: "query"
   Bearer:
     type: "apiKey"
     name: "Authorization"
